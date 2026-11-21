@@ -2312,9 +2312,12 @@
 
       function localeFor(code) {
         const id = String(code || '').trim().replace(/_/g, '-').toLowerCase();
-        if (/^zh-(?:hant|tw|hk|mo)(?:-|$)/.test(id)) return 'zh-Hant';
-        const base = id.split('-')[0];
-        if (base === 'zh') return 'zh-Hans';
+        const [base, script] = id.split('-');
+        if (base === 'zh') {
+          if (script === 'hans') return 'zh-Hans';
+          if (script === 'hant') return 'zh-Hant';
+          return /(?:^|-)(?:tw|hk|mo)(?:-|$)/.test(id) ? 'zh-Hant' : 'zh-Hans';
+        }
         if (base === 'pt') return 'pt-BR';
         return Object.hasOwn(LANG_NAMES, base) ? base : null;
       }
@@ -2342,8 +2345,9 @@
       function installLocale() {
         const select = document.getElementById('languageSelect');
         const stored = localeFor(readStored(LANG_KEY));
-        const detected = (navigator.languages || [navigator.language]).map(localeFor).find(Boolean);
-        locale = stored || detected || 'ja';
+        const preferences = Array.from(navigator.languages || []).filter(tag => typeof tag === 'string' && tag.trim());
+        if (!preferences.length && typeof navigator.language === 'string' && navigator.language.trim()) preferences.push(navigator.language);
+        locale = stored || preferences.map(localeFor).find(Boolean) || (preferences.length ? 'en' : 'ja');
         for (const [value, label] of Object.entries(LANG_NAMES)) {
           const option = document.createElement('option');
           option.value = value;
