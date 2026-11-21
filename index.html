@@ -817,11 +817,11 @@
             指定エリアの中心をラインに近づけるほど高得点です。
           </p>
 
-          <div class="info-box" id="bestInfo">ランキングはクリア時に自動送信します。</div>
+          <div class="info-box" id="bestInfo">名前を入れて開始した完走のみランキング送信します。</div>
 
           <div class="name-row">
-            <label for="playerNameInput">ランキング用の名前（10文字まで）</label>
-            <input id="playerNameInput" type="text" maxlength="10" autocomplete="nickname" placeholder="名前を入力">
+            <label for="playerNameInput">ランキング用の名前（任意・10文字まで）</label>
+            <input id="playerNameInput" type="text" maxlength="10" autocomplete="nickname" placeholder="空欄でもプレイできます">
           </div>
 
           <div class="button-grid">
@@ -832,7 +832,7 @@
             </div>
             <a class="btn linkish" href="https://chameleonjp.codeberg.page/chameleonjp_lab/">その他のゲームへ</a>
           </div>
-          <p class="small-note">空白だけの名前では開始できません。名前はこの端末に保存します。</p>
+          <p class="small-note">名前なしでも遊べます。開始時に有効な名前がある場合のみ、完走結果をランキングへ送信します。</p>
         </section>
       </div>
     </main>
@@ -990,7 +990,8 @@
       };
 
       const state = {
-        playerName: '',
+        play: null,
+        playSerial: 0,
         screen: 'home',
         phase: 'home',
         order: [],
@@ -1057,39 +1058,68 @@
         }
       }
 
+      function scheduleRunTimer(slot, callback, delay) {
+        const play = state.play;
+        const id = window.setTimeout(() => {
+          if (state.play !== play || state[slot] !== id) return;
+          state[slot] = 0;
+          callback();
+        }, delay);
+        state[slot] = id;
+      }
+
+      function requestRunFrame() {
+        const play = state.play;
+        const id = requestAnimationFrame((timestamp) => {
+          if (state.play !== play || state.rafId !== id) return;
+          state.rafId = 0;
+          tickFall(timestamp);
+        });
+        state.rafId = id;
+      }
+
+      function readStored(key) {
+        try { return localStorage.getItem(key); } catch (_) { return null; }
+      }
+
+      function writeStored(key, value) {
+        try { localStorage.setItem(key, value); } catch (_) { /* Storage is optional. */ }
+      }
+
       function getBestScore() {
-        const raw = localStorage.getItem(BEST_STORAGE_KEY);
+        const raw = readStored(BEST_STORAGE_KEY);
         if (raw === null) return null;
         const value = Number(raw);
         return Number.isFinite(value) ? value : null;
       }
 
       function setBestScore(value) {
-        localStorage.setItem(BEST_STORAGE_KEY, String(value));
+        writeStored(BEST_STORAGE_KEY, String(value));
       }
 
       function updateBestInfo() {
         const best = getBestScore();
         if (best === null) {
-          els.bestInfo.textContent = 'ランキングはクリア時に自動送信します。自己ベストはこの端末にも保存します。';
+          els.bestInfo.textContent = '名前を入れて開始した完走のみランキング送信します。自己ベストはこの端末にも保存します。';
         } else {
-          els.bestInfo.textContent = `自己ベスト：${best}点 / ${MAX_TOTAL_SCORE}点。ランキングはクリア時に自動送信します。`;
+          els.bestInfo.textContent = `自己ベスト：${best}点 / ${MAX_TOTAL_SCORE}点。名前を入れて開始した完走のみランキング送信します。`;
         }
       }
 
       function loadSavedName() {
-        const saved = localStorage.getItem(NAME_STORAGE_KEY) || '';
-        els.playerNameInput.value = saved.slice(0, 10);
+        els.playerNameInput.value = normalizePlayName(readStored(NAME_STORAGE_KEY));
       }
 
-      function getValidatedName() {
-        const value = els.playerNameInput.value.trim().slice(0, 10);
-        if (!value) return '';
+      function normalizePlayName(input) {
+        if (typeof input !== 'string') return '';
+        const value = input.trim();
+        if (!value || value.length > 10 || /[\p{Cc}\p{Cs}\p{Zl}\p{Zp}]/u.test(value)
+          || !/[^\p{Default_Ignorable_Code_Point}\s]/u.test(value)) return '';
         return value;
       }
 
       function saveName(name) {
-        localStorage.setItem(NAME_STORAGE_KEY, name);
+        writeStored(NAME_STORAGE_KEY, name);
         els.playerNameInput.value = name;
       }
 
@@ -1186,31 +1216,22 @@
       }
 
       function startGame() {
-        const name = getValidatedName();
-        if (!name) {
-          showToast('名前を入力してください', 1300);
-          els.playerNameInput.focus();
-          return;
-        }
-        saveName(name);
-        state.playerName = name;
-        beginNewGame();
+        if (state.screen !== 'home' || state.phase !== 'home') return;
+        const name = normalizePlayName(els.playerNameInput.value);
+        if (name) saveName(name);
+        else els.playerNameInput.value = '';
+        beginNewGame(name);
       }
 
       function restartGame() {
-        const saved = (localStorage.getItem(NAME_STORAGE_KEY) || '').trim().slice(0, 10);
-        if (!saved) {
-          showScreen('home');
-          showToast('名前を入力してください', 1300);
-          return;
-        }
-        els.playerNameInput.value = saved;
-        state.playerName = saved;
-        beginNewGame();
+        if (state.screen !== 'result' || state.phase !== 'finished' || !state.play) return;
+        beginNewGame(state.play.name);
       }
 
-      function beginNewGame() {
+      function beginNewGame(name) {
         clearTimers();
+        state.play = Object.freeze({ name, serial: ++state.playSerial });
+        state.rankingRequestId += 1;
         state.phase = 'countdown';
         state.order = shuffle(Array.from({ length: STICK_COUNT }, (_, i) => i));
         state.stickConfigs = makeStickConfigs();
@@ -1229,9 +1250,7 @@
         updateHud();
         setJudgeText('3秒後に始まります');
         showScreen('game');
-        window.setTimeout(() => {
-          startCountdown(3);
-        }, 80);
+        scheduleRunTimer('countdownTimerId', () => startCountdown(3), 80);
       }
 
       function startCountdown(count) {
@@ -1241,7 +1260,7 @@
         updateHud();
         if (count <= 0) {
           els.countdown.textContent = '開始';
-          state.countdownTimerId = window.setTimeout(() => {
+          scheduleRunTimer('countdownTimerId', () => {
             els.countdown.classList.remove('show');
             state.countdownTimerId = 0;
             setJudgeText('指定エリアのラインを狙ってください');
@@ -1249,7 +1268,7 @@
           }, 360);
           return;
         }
-        state.countdownTimerId = window.setTimeout(() => {
+        scheduleRunTimer('countdownTimerId', () => {
           startCountdown(count - 1);
         }, 720);
       }
@@ -1262,7 +1281,7 @@
         state.phase = 'between';
         updateHud();
         const delay = randInt(MIN_NEXT_DELAY_MS, MAX_NEXT_DELAY_MS);
-        state.nextTimerId = window.setTimeout(() => {
+        scheduleRunTimer('nextTimerId', () => {
           state.nextTimerId = 0;
           const stickIndex = state.order[state.judgedCount];
           beginStickFall(stickIndex);
@@ -1287,7 +1306,7 @@
         config.element.style.transform = `translateX(-50%) translateY(${state.currentY}px)`;
         setJudgeText(`${state.activeRound}本目：${stickIndex + 1}番の棒`);
         updateHud();
-        state.rafId = requestAnimationFrame(tickFall);
+        requestRunFrame();
       }
 
       function tickFall(now) {
@@ -1303,7 +1322,7 @@
           judgeActiveStick({ timedOut: true });
           return;
         }
-        state.rafId = requestAnimationFrame(tickFall);
+        requestRunFrame();
       }
 
       function handleTapArea(event) {
@@ -1353,12 +1372,12 @@
         updateHud();
 
         if (state.judgedCount >= STICK_COUNT) {
-          state.nextTimerId = window.setTimeout(() => {
+          scheduleRunTimer('nextTimerId', () => {
             state.nextTimerId = 0;
             finishGame('clear');
           }, 420);
         } else {
-          state.nextTimerId = window.setTimeout(() => {
+          scheduleRunTimer('nextTimerId', () => {
             state.nextTimerId = 0;
             scheduleNextStick();
           }, 360);
@@ -1388,6 +1407,9 @@
       }
 
       function finishGame(mode) {
+        if (state.screen !== 'game' || !state.play || state.phase === 'finished') return;
+        if (mode === 'clear' && state.judgedCount < STICK_COUNT) return;
+        const play = state.play;
         clearTimers();
         state.phase = 'finished';
         state.lastResultMode = mode;
@@ -1400,8 +1422,10 @@
         renderResult(mode);
         showScreen('result');
         updateBestInfo();
-        if (mode === 'clear') {
-          sendScoreOnce().then(() => loadResultRanking());
+        if (mode === 'clear' && play.name) {
+          sendScoreOnce(play).then(() => {
+            if (state.play === play && state.screen === 'result') loadResultRanking();
+          });
         } else {
           loadResultRanking();
         }
@@ -1495,7 +1519,7 @@
         }
 
         if (isClear) {
-          setSubmitStatus('ランキングへ送信中です。', '');
+          setSubmitStatus(state.play?.name ? 'ランキングへ送信中です。' : '名前なしで開始したため、ランキングには送信しません。', '');
         } else {
           setSubmitStatus('リタイアのため、ランキングへは送信しません。', '');
         }
@@ -1641,8 +1665,9 @@
         }
       }
 
-      async function sendScoreOnce() {
-        if (state.submitStarted) return;
+      async function sendScoreOnce(play = state.play) {
+        if (!play?.name || state.play !== play || state.screen !== 'result' || state.lastResultMode !== 'clear' || state.submitStarted) return;
+        const current = () => state.play === play && state.screen === 'result';
         state.submitStarted = true;
         const score = clamp(state.totalScore, 0, MAX_TOTAL_SCORE);
         try {
@@ -1654,7 +1679,7 @@
               'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
             },
             body: JSON.stringify({
-              p_display_name: state.playerName,
+              p_display_name: play.name,
               p_game_slug: GAME_SLUG,
               p_score: score,
               p_client_version: CLIENT_VERSION
@@ -1664,6 +1689,7 @@
             throw new Error(`HTTP ${response.status}`);
           }
           const data = await response.json().catch(() => null);
+          if (!current()) return;
           const result = Array.isArray(data) ? data[0] : data;
           if (result && result.accepted === false) {
             setSubmitStatus('ランキング送信は受け付けられませんでした。名前やスコアは画面で確認できます。', 'bad');
@@ -1672,7 +1698,7 @@
           const bestLabel = result && result.is_new_best ? '自己ベスト更新。' : '';
           setSubmitStatus(`ランキングへ送信しました。${bestLabel}`.trim(), 'good');
         } catch (error) {
-          setSubmitStatus('ランキング送信に失敗しました。結果画面はそのまま使えます。', 'bad');
+          if (current()) setSubmitStatus('ランキング送信に失敗しました。結果画面はそのまま使えます。', 'bad');
         }
       }
 
@@ -1738,6 +1764,8 @@
 
       function returnHome() {
         clearTimers();
+        state.play = null;
+        state.rankingRequestId += 1;
         state.phase = 'home';
         updateBestInfo();
         showScreen('home');
