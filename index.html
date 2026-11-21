@@ -1,0 +1,1808 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#8f1f2f">
+  <title>取ればいいのよ</title>
+  <link rel="canonical" href="https://chameleonjp-lab.github.io/torebaiinoyo/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:url" content="https://chameleonjp-lab.github.io/torebaiinoyo/" />
+  <meta property="og:title" content="取ればいいのよ" />
+  <meta property="og:description" content="落ちてくる8本の棒をラインぴったりで止める、スマホ向け反射神経ゲーム。" />
+  <meta property="og:image" content="https://chameleonjp-lab.github.io/torebaiinoyo/social-card.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="「取ればいいのよ」のタイトルと、落下する8本の棒、狙いを合わせる横のライン。" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="取ればいいのよ" />
+  <meta name="twitter:description" content="落ちてくる8本の棒をラインぴったりで止める、スマホ向け反射神経ゲーム。" />
+  <meta name="twitter:image" content="https://chameleonjp-lab.github.io/torebaiinoyo/social-card.jpg" />
+  <meta name="twitter:image:alt" content="「取ればいいのよ」のタイトルと、落下する8本の棒、狙いを合わせる横のライン。" />
+  <style>
+    :root {
+      --bg: #fff7ef;
+      --bg-soft: #ffe8dd;
+      --panel: rgba(255, 252, 247, 0.94);
+      --panel-strong: #fffdf8;
+      --red: #9f2537;
+      --red-deep: #6f1020;
+      --red-soft: #d94b60;
+      --rose: #f8b8c0;
+      --cream: #fff4d8;
+      --ink: #3c1720;
+      --muted: #76525a;
+      --line: #ffdd69;
+      --ok: #246f41;
+      --warn: #a75a00;
+      --bad: #8d1b25;
+      --shadow: 0 16px 38px rgba(106, 16, 32, 0.22);
+      --radius: 22px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 20% -10%, rgba(255, 201, 179, 0.9), transparent 35%),
+        radial-gradient(circle at 88% 8%, rgba(255, 222, 137, 0.75), transparent 28%),
+        linear-gradient(180deg, #fff8ef 0%, #ffd9d8 52%, #c73e55 130%);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      overscroll-behavior-x: none;
+      -webkit-text-size-adjust: 100%;
+      touch-action: manipulation;
+    }
+
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    button,
+    input,
+    a {
+      font: inherit;
+    }
+
+    input {
+      user-select: text;
+      -webkit-user-select: text;
+      -webkit-touch-callout: default;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .app {
+      width: 100%;
+      min-height: 100svh;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      min-height: 100svh;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .page {
+      width: min(100%, 520px);
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: calc(18px + var(--safe-top)) 14px calc(18px + var(--safe-bottom));
+    }
+
+    .home-card,
+    .result-card,
+    .modal-card {
+      background: var(--panel);
+      border: 1px solid rgba(159, 37, 55, 0.22);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .home-card,
+    .result-card {
+      padding: 18px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(159, 37, 55, 0.1);
+      color: var(--red-deep);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(2.35rem, 13vw, 4.3rem);
+      line-height: 0.95;
+      letter-spacing: -0.08em;
+      color: var(--red-deep);
+      text-shadow: 0 3px 0 rgba(255, 244, 216, 0.9);
+    }
+
+    .lead {
+      margin-top: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 0.98rem;
+    }
+
+    .info-box {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255, 232, 221, 0.78);
+      border: 1px solid rgba(159, 37, 55, 0.12);
+      color: var(--ink);
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    .name-row {
+      margin-top: 16px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .name-row label {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--red-deep);
+    }
+
+    .name-row input {
+      width: 100%;
+      border: 2px solid rgba(159, 37, 55, 0.28);
+      border-radius: 16px;
+      background: #fffdf8;
+      color: var(--ink);
+      padding: 13px 14px;
+      outline: none;
+      font-weight: 800;
+      touch-action: manipulation;
+    }
+
+    .name-row input:focus {
+      border-color: var(--red-soft);
+      box-shadow: 0 0 0 4px rgba(217, 75, 96, 0.14);
+    }
+
+    .button-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .button-grid.two {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 17px;
+      min-height: 48px;
+      padding: 12px 14px;
+      background: #fffdf8;
+      color: var(--red-deep);
+      font-weight: 900;
+      box-shadow: 0 7px 0 rgba(111, 16, 32, 0.14);
+      border: 1px solid rgba(159, 37, 55, 0.18);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 5px 0 rgba(111, 16, 32, 0.12);
+    }
+
+    .btn.primary {
+      background: linear-gradient(180deg, #c9344c 0%, #8f1f2f 100%);
+      color: #fff8ed;
+      border-color: rgba(111, 16, 32, 0.16);
+      box-shadow: 0 8px 0 rgba(111, 16, 32, 0.3);
+    }
+
+    .btn.secondary {
+      background: var(--cream);
+    }
+
+    .btn.linkish {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .small-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .game-page {
+      width: min(100%, 580px);
+      height: 100svh;
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: calc(8px + var(--safe-top)) 10px calc(10px + var(--safe-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: start;
+      flex: 0 0 auto;
+    }
+
+    .hud-panel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 8px;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid rgba(159, 37, 55, 0.2);
+      border-radius: 18px;
+      box-shadow: 0 8px 22px rgba(106, 16, 32, 0.12);
+    }
+
+    .hud-item {
+      min-width: 0;
+      padding: 6px 7px;
+      border-radius: 13px;
+      background: rgba(255, 232, 221, 0.75);
+      text-align: center;
+    }
+
+    .hud-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .hud-value {
+      display: block;
+      margin-top: 3px;
+      color: var(--red-deep);
+      font-size: clamp(0.9rem, 4.5vw, 1.35rem);
+      font-weight: 950;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .retire-btn {
+      min-width: 70px;
+      min-height: 48px;
+      padding: 10px 10px;
+      border-radius: 15px;
+      border: 1px solid rgba(111, 16, 32, 0.22);
+      background: var(--red-deep);
+      color: #fff7ef;
+      font-size: 0.86rem;
+      font-weight: 900;
+      box-shadow: 0 7px 0 rgba(111, 16, 32, 0.28);
+      touch-action: manipulation;
+    }
+
+    .retire-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 5px 0 rgba(111, 16, 32, 0.22);
+    }
+
+    .stage {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 256px;
+      max-height: 520px;
+      border-radius: 22px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 232, 221, 0.8)),
+        repeating-linear-gradient(90deg, rgba(159, 37, 55, 0.08) 0 1px, transparent 1px 12.5%);
+      border: 2px solid rgba(159, 37, 55, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 16px 34px rgba(106, 16, 32, 0.16);
+      touch-action: none;
+    }
+
+    .stick-area {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      padding: 0 clamp(7px, 2vw, 14px);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .stick-track {
+      position: relative;
+      min-width: 0;
+    }
+
+    .stick {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: clamp(12px, 3.1vw, 18px);
+      height: clamp(146px, 31svh, 220px);
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.75), transparent 28%, rgba(83, 10, 20, 0.16) 78%),
+        linear-gradient(180deg, #b52b40 0%, #f7b4a7 48%, #8f1f2f 100%);
+      box-shadow: 0 10px 18px rgba(106, 16, 32, 0.2);
+      transform: translateX(-50%) translateY(0px);
+      will-change: transform;
+      opacity: 0.92;
+    }
+
+    .stick::before,
+    .stick::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      width: 74%;
+      height: 7px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(255, 244, 216, 0.92);
+      box-shadow: inset 0 -2px 0 rgba(111, 16, 32, 0.16);
+    }
+
+    .stick::before {
+      top: 7px;
+    }
+
+    .stick::after {
+      bottom: 7px;
+    }
+
+    .stick.active {
+      opacity: 1;
+      filter: drop-shadow(0 0 10px rgba(255, 221, 105, 0.68));
+    }
+
+    .stick.done {
+      opacity: 0.56;
+      filter: grayscale(0.1);
+    }
+
+    .target-mark {
+      position: absolute;
+      left: 50%;
+      width: 190%;
+      height: 4px;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: #fff8ca;
+      border: 1px solid rgba(111, 16, 32, 0.38);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.75), 0 0 8px rgba(255, 221, 105, 0.88);
+    }
+
+    .target-center-dot {
+      position: absolute;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #fffdf8;
+      border: 2px solid var(--red-deep);
+      box-shadow: 0 0 0 2px rgba(255, 221, 105, 0.8);
+    }
+
+    .fixed-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 56%;
+      height: 8px;
+      transform: translateY(-50%);
+      z-index: 4;
+      background: linear-gradient(90deg, transparent, var(--line) 12%, #fff2a6 50%, var(--line) 88%, transparent);
+      box-shadow: 0 0 0 2px rgba(111, 16, 32, 0.22), 0 0 18px rgba(255, 221, 105, 0.7);
+      pointer-events: none;
+    }
+
+    .countdown {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(60, 23, 32, 0.22);
+      backdrop-filter: blur(2px);
+      color: #fffdf8;
+      font-size: clamp(3.5rem, 22vw, 7rem);
+      font-weight: 1000;
+      text-shadow: 0 6px 0 rgba(111, 16, 32, 0.34);
+      pointer-events: none;
+    }
+
+    .countdown.show {
+      display: flex;
+    }
+
+    .judge-pop {
+      flex: 0 0 auto;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 12px;
+      border-radius: 17px;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid rgba(159, 37, 55, 0.16);
+      color: var(--red-deep);
+      font-weight: 950;
+      box-shadow: 0 8px 20px rgba(106, 16, 32, 0.12);
+    }
+
+    .tap-area {
+      flex: 0 0 auto;
+      width: 100%;
+      min-height: clamp(82px, 16svh, 118px);
+      border: 0;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.28), transparent 35%),
+        linear-gradient(180deg, #d7445b 0%, #8f1f2f 100%);
+      color: #fff8ed;
+      box-shadow: 0 10px 0 rgba(111, 16, 32, 0.34), 0 18px 34px rgba(106, 16, 32, 0.22);
+      font-weight: 1000;
+      letter-spacing: 0.04em;
+      touch-action: none;
+      cursor: pointer;
+    }
+
+    .tap-area:active {
+      transform: translateY(3px);
+      box-shadow: 0 7px 0 rgba(111, 16, 32, 0.32), 0 14px 28px rgba(106, 16, 32, 0.18);
+    }
+
+    .tap-main {
+      display: block;
+      font-size: clamp(1.05rem, 5.8vw, 1.7rem);
+      line-height: 1.1;
+    }
+
+    .tap-sub {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.78rem;
+      opacity: 0.9;
+      line-height: 1.25;
+    }
+
+    .result-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .result-title h2 {
+      color: var(--red-deep);
+      font-size: clamp(1.7rem, 9vw, 3rem);
+      letter-spacing: -0.04em;
+    }
+
+    .score-big {
+      margin: 12px 0;
+      padding: 15px;
+      border-radius: 19px;
+      background: linear-gradient(180deg, #fff8e7, #ffe8dd);
+      border: 1px solid rgba(159, 37, 55, 0.18);
+      text-align: center;
+    }
+
+    .score-big .value {
+      display: block;
+      color: var(--red-deep);
+      font-size: clamp(2.2rem, 15vw, 4.4rem);
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .score-big .caption {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .summary-item {
+      padding: 10px;
+      border-radius: 16px;
+      background: rgba(255, 232, 221, 0.7);
+      border: 1px solid rgba(159, 37, 55, 0.12);
+    }
+
+    .summary-item .k {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .summary-item .v {
+      display: block;
+      margin-top: 3px;
+      color: var(--red-deep);
+      font-size: 1.08rem;
+      font-weight: 950;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .result-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 11px;
+      border-radius: 15px;
+      background: #fffdf8;
+      border: 1px solid rgba(159, 37, 55, 0.12);
+      font-size: 0.9rem;
+    }
+
+    .result-row strong {
+      color: var(--red-deep);
+    }
+
+    .result-row .eval {
+      font-weight: 950;
+    }
+
+    .submit-status {
+      margin-top: 14px;
+      padding: 11px;
+      border-radius: 16px;
+      background: rgba(255, 248, 231, 0.82);
+      border: 1px solid rgba(159, 37, 55, 0.12);
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .submit-status.good {
+      color: var(--ok);
+    }
+
+    .submit-status.bad {
+      color: var(--bad);
+    }
+
+    .ranking-panel {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid rgba(159, 37, 55, 0.16);
+      box-shadow: 0 8px 20px rgba(106, 16, 32, 0.1);
+    }
+
+    .ranking-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .ranking-head h3 {
+      margin: 0;
+      color: var(--red-deep);
+      font-size: 1.05rem;
+      line-height: 1.2;
+    }
+
+    .ranking-status {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(159, 37, 55, 0.1);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .ranking-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 3.3em 1fr auto;
+      gap: 8px;
+      align-items: center;
+      min-width: 0;
+      padding: 9px 10px;
+      border-radius: 14px;
+      background: rgba(255, 232, 221, 0.66);
+      border: 1px solid rgba(159, 37, 55, 0.1);
+      font-size: 0.88rem;
+    }
+
+    .ranking-rank {
+      color: var(--red-deep);
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .ranking-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    .ranking-score {
+      color: var(--red-deep);
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .ranking-empty {
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(255, 248, 231, 0.72);
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      font-weight: 750;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(60, 23, 32, 0.5);
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(100%, 440px);
+      padding: 18px;
+    }
+
+    .modal-card h2 {
+      color: var(--red-deep);
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .modal-card p {
+      color: var(--ink);
+      line-height: 1.75;
+      font-size: 0.96rem;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(18px + var(--safe-bottom));
+      z-index: 80;
+      transform: translateX(-50%) translateY(18px);
+      width: min(calc(100% - 28px), 420px);
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(60, 23, 32, 0.94);
+      color: #fff8ed;
+      font-weight: 850;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 380px) {
+      .page {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .home-card,
+      .result-card {
+        padding: 15px;
+      }
+
+      .button-grid.two {
+        grid-template-columns: 1fr;
+      }
+
+      .hud-panel {
+        gap: 4px;
+        padding: 6px;
+      }
+
+      .hud-item {
+        padding: 5px 4px;
+      }
+
+      .stage {
+        min-height: 246px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main id="homeScreen" class="screen active" aria-label="ホーム画面">
+      <div class="page">
+        <section class="home-card">
+          <span class="eyebrow">8本勝負・反射神経ゲーム</span>
+          <h1>取れば<br>いいのよ</h1>
+          <p class="lead">
+            落ちてくる棒を、ラインぴったりで止める反射神経ゲームです。<br>
+            8本の棒がランダムな順番とリズムで落ちてきます。<br>
+            指定エリアの中心をラインに近づけるほど高得点です。
+          </p>
+
+          <div class="info-box" id="bestInfo">ランキングはクリア時に自動送信します。</div>
+
+          <div class="name-row">
+            <label for="playerNameInput">ランキング用の名前（10文字まで）</label>
+            <input id="playerNameInput" type="text" maxlength="10" autocomplete="nickname" placeholder="名前を入力">
+          </div>
+
+          <div class="button-grid">
+            <button id="startButton" class="btn primary" type="button">ゲーム開始</button>
+            <div class="button-grid two">
+              <button id="rulesButton" class="btn secondary" type="button">ルール説明</button>
+              <button id="homeShareButton" class="btn secondary" type="button">ゲームをシェア</button>
+            </div>
+            <a class="btn linkish" href="https://chameleonjp.codeberg.page/chameleonjp_lab/">その他のゲームへ</a>
+          </div>
+          <p class="small-note">空白だけの名前では開始できません。名前はこの端末に保存します。</p>
+        </section>
+      </div>
+    </main>
+
+    <main id="gameScreen" class="screen" aria-label="ゲーム画面">
+      <div class="game-page">
+        <header class="hud">
+          <div class="hud-panel" aria-live="polite">
+            <div class="hud-item">
+              <span class="hud-label">本数</span>
+              <span id="progressText" class="hud-value">0/8</span>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label">スコア</span>
+              <span id="scoreText" class="hud-value">0点</span>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label">次</span>
+              <span id="nextStickText" class="hud-value">-</span>
+            </div>
+          </div>
+          <button id="retireButton" class="retire-btn" type="button">リタイア</button>
+        </header>
+
+        <section id="stage" class="stage" aria-label="棒の落下エリア">
+          <div id="stickArea" class="stick-area"></div>
+          <div id="fixedLine" class="fixed-line" aria-hidden="true"></div>
+          <div id="countdown" class="countdown" aria-hidden="true">3</div>
+        </section>
+
+        <div id="judgeText" class="judge-pop" aria-live="polite">タップエリアで取ります</div>
+
+        <button id="tapArea" class="tap-area" type="button" aria-label="ここで取る">
+          <span class="tap-main">ここで取る</span>
+          <span class="tap-sub">落ちている棒だけ判定します</span>
+        </button>
+      </div>
+    </main>
+
+    <main id="resultScreen" class="screen" aria-label="結果画面">
+      <div class="page">
+        <section class="result-card">
+          <div class="result-title">
+            <h2>結果</h2>
+            <span id="resultBadge" class="eyebrow">クリア</span>
+          </div>
+
+          <div class="score-big">
+            <span id="finalScoreText" class="value">0点</span>
+            <span id="resultCaption" class="caption">8本合計</span>
+          </div>
+
+          <div id="summaryGrid" class="summary-grid"></div>
+          <div id="resultList" class="result-list"></div>
+          <div id="submitStatus" class="submit-status">ランキング送信待ちです。</div>
+
+          <section class="ranking-panel" aria-label="ランキング">
+            <div class="ranking-head">
+              <h3>ランキング</h3>
+              <span id="rankingStatus" class="ranking-status">確認中</span>
+            </div>
+            <div id="rankingList" class="ranking-list" aria-live="polite">
+              <div class="ranking-empty">ランキングを読み込みます。</div>
+            </div>
+          </section>
+
+          <div class="button-grid">
+            <button id="resultShareButton" class="btn primary" type="button">ゲーム結果をシェア</button>
+            <div class="button-grid two">
+              <button id="restartButton" class="btn secondary" type="button">もう一度遊ぶ</button>
+              <button id="finishButton" class="btn secondary" type="button">ゲーム終了</button>
+            </div>
+            <a class="btn linkish" href="https://chameleonjp.codeberg.page/chameleonjp_lab/">その他のゲームへ</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="rulesModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+    <section class="modal-card">
+      <h2 id="rulesTitle">ルール説明</h2>
+      <p>
+        8本の棒が1本ずつ落ちてきます。<br>
+        画面下のタップエリアを押すと、落ちている棒を取ります。<br>
+        棒の指定エリア中心がラインに近いほど高得点です。<br>
+        1本100点、8本合計800点満点です。
+      </p>
+      <div class="button-grid">
+        <button id="closeRulesButton" class="btn primary" type="button">閉じる</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const SUPABASE_URL = 'https://mlpnjgezrnhdxsxolyzj.supabase.co';
+      const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_drzcy0v97knU6FgjqSgBHw_0A9XPdFM';
+      const GAME_SLUG = 'toreba_iinoyo';
+      const GAME_TITLE = '取ればいいのよ';
+      const GAME_URL = 'https://chameleonjp-lab.github.io/torebaiinoyo/';
+      const CLIENT_VERSION = 'toreba_iinoyo_v6_20260611_precision_8sticks_speed_ranking_reviewed';
+
+      const STICK_COUNT = 8;
+      const MAX_SCORE_PER_STICK = 100;
+      const MAX_TOTAL_SCORE = STICK_COUNT * MAX_SCORE_PER_STICK;
+      const MIN_NEXT_DELAY_MS = 250;
+      const MAX_NEXT_DELAY_MS = 750;
+      const MIN_ARRIVAL_MS = 300;
+      const MAX_ARRIVAL_MS = 450;
+      const TARGET_HALF_GAP_PX = 12;
+      const FAIL_MARGIN_PX = 24;
+      const RANKING_LIMIT = 5;
+
+      const NAME_STORAGE_KEY = 'toreba_iinoyo_player_name_v1';
+      const BEST_STORAGE_KEY = 'toreba_iinoyo_best_score_v1';
+
+      const els = {
+        homeScreen: document.getElementById('homeScreen'),
+        gameScreen: document.getElementById('gameScreen'),
+        resultScreen: document.getElementById('resultScreen'),
+        playerNameInput: document.getElementById('playerNameInput'),
+        bestInfo: document.getElementById('bestInfo'),
+        startButton: document.getElementById('startButton'),
+        rulesButton: document.getElementById('rulesButton'),
+        homeShareButton: document.getElementById('homeShareButton'),
+        rulesModal: document.getElementById('rulesModal'),
+        closeRulesButton: document.getElementById('closeRulesButton'),
+        stage: document.getElementById('stage'),
+        stickArea: document.getElementById('stickArea'),
+        fixedLine: document.getElementById('fixedLine'),
+        countdown: document.getElementById('countdown'),
+        progressText: document.getElementById('progressText'),
+        scoreText: document.getElementById('scoreText'),
+        nextStickText: document.getElementById('nextStickText'),
+        retireButton: document.getElementById('retireButton'),
+        judgeText: document.getElementById('judgeText'),
+        tapArea: document.getElementById('tapArea'),
+        resultBadge: document.getElementById('resultBadge'),
+        finalScoreText: document.getElementById('finalScoreText'),
+        resultCaption: document.getElementById('resultCaption'),
+        summaryGrid: document.getElementById('summaryGrid'),
+        resultList: document.getElementById('resultList'),
+        submitStatus: document.getElementById('submitStatus'),
+        rankingStatus: document.getElementById('rankingStatus'),
+        rankingList: document.getElementById('rankingList'),
+        resultShareButton: document.getElementById('resultShareButton'),
+        restartButton: document.getElementById('restartButton'),
+        finishButton: document.getElementById('finishButton'),
+        toast: document.getElementById('toast')
+      };
+
+      const state = {
+        playerName: '',
+        screen: 'home',
+        phase: 'home',
+        order: [],
+        stickConfigs: [],
+        activeIndex: -1,
+        activeRound: 0,
+        judgedCount: 0,
+        totalScore: 0,
+        results: [],
+        currentY: 0,
+        startY: 0,
+        speedPxPerMs: 0,
+        startedAt: 0,
+        rafId: 0,
+        nextTimerId: 0,
+        countdownTimerId: 0,
+        submitStarted: false,
+        lastResultMode: 'clear',
+        retireProgress: 0,
+        lastShareText: '',
+        rankingRequestId: 0
+      };
+
+      function showScreen(name) {
+        state.screen = name;
+        els.homeScreen.classList.toggle('active', name === 'home');
+        els.gameScreen.classList.toggle('active', name === 'game');
+        els.resultScreen.classList.toggle('active', name === 'result');
+      }
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function rand(min, max) {
+        return min + Math.random() * (max - min);
+      }
+
+      function randInt(min, max) {
+        return Math.floor(rand(min, max + 1));
+      }
+
+      function shuffle(array) {
+        const copy = array.slice();
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function clearTimers() {
+        if (state.rafId) {
+          cancelAnimationFrame(state.rafId);
+          state.rafId = 0;
+        }
+        if (state.nextTimerId) {
+          clearTimeout(state.nextTimerId);
+          state.nextTimerId = 0;
+        }
+        if (state.countdownTimerId) {
+          clearTimeout(state.countdownTimerId);
+          state.countdownTimerId = 0;
+        }
+      }
+
+      function getBestScore() {
+        const raw = localStorage.getItem(BEST_STORAGE_KEY);
+        if (raw === null) return null;
+        const value = Number(raw);
+        return Number.isFinite(value) ? value : null;
+      }
+
+      function setBestScore(value) {
+        localStorage.setItem(BEST_STORAGE_KEY, String(value));
+      }
+
+      function updateBestInfo() {
+        const best = getBestScore();
+        if (best === null) {
+          els.bestInfo.textContent = 'ランキングはクリア時に自動送信します。自己ベストはこの端末にも保存します。';
+        } else {
+          els.bestInfo.textContent = `自己ベスト：${best}点 / ${MAX_TOTAL_SCORE}点。ランキングはクリア時に自動送信します。`;
+        }
+      }
+
+      function loadSavedName() {
+        const saved = localStorage.getItem(NAME_STORAGE_KEY) || '';
+        els.playerNameInput.value = saved.slice(0, 10);
+      }
+
+      function getValidatedName() {
+        const value = els.playerNameInput.value.trim().slice(0, 10);
+        if (!value) return '';
+        return value;
+      }
+
+      function saveName(name) {
+        localStorage.setItem(NAME_STORAGE_KEY, name);
+        els.playerNameInput.value = name;
+      }
+
+      function showToast(message, durationMs = 1000) {
+        els.toast.textContent = message;
+        els.toast.classList.add('show');
+        window.clearTimeout(showToast.timerId);
+        showToast.timerId = window.setTimeout(() => {
+          els.toast.classList.remove('show');
+        }, durationMs);
+      }
+
+      function setJudgeText(message) {
+        els.judgeText.textContent = message;
+      }
+
+      function updateHud() {
+        els.progressText.textContent = `${state.judgedCount}/${STICK_COUNT}`;
+        els.scoreText.textContent = `${state.totalScore}点`;
+        if (state.phase === 'falling' && state.activeIndex >= 0) {
+          els.nextStickText.textContent = `${state.activeIndex + 1}番`;
+        } else if (state.phase === 'countdown') {
+          els.nextStickText.textContent = '準備';
+        } else if (state.judgedCount >= STICK_COUNT) {
+          els.nextStickText.textContent = '完了';
+        } else {
+          els.nextStickText.textContent = '-';
+        }
+      }
+
+      function makeStickConfigs() {
+        return Array.from({ length: STICK_COUNT }, (_, index) => ({
+          index,
+          targetPct: randInt(38, 64),
+          element: null
+        }));
+      }
+
+      function renderSticks() {
+        els.stickArea.textContent = '';
+        state.stickConfigs.forEach((config) => {
+          const track = document.createElement('div');
+          track.className = 'stick-track';
+          track.dataset.trackIndex = String(config.index);
+
+          const stick = document.createElement('div');
+          stick.className = 'stick';
+          stick.id = `stick-${config.index}`;
+          stick.dataset.stickIndex = String(config.index);
+          stick.style.setProperty('--target-center', `${config.targetPct}%`);
+          stick.style.transform = 'translateX(-50%) translateY(0px)';
+
+          const upperMark = document.createElement('span');
+          upperMark.className = 'target-mark target-upper';
+          upperMark.style.top = `calc(${config.targetPct}% - ${TARGET_HALF_GAP_PX}px)`;
+
+          const lowerMark = document.createElement('span');
+          lowerMark.className = 'target-mark target-lower';
+          lowerMark.style.top = `calc(${config.targetPct}% + ${TARGET_HALF_GAP_PX}px)`;
+
+          const centerDot = document.createElement('span');
+          centerDot.className = 'target-center-dot';
+          centerDot.style.top = `${config.targetPct}%`;
+
+          stick.appendChild(upperMark);
+          stick.appendChild(lowerMark);
+          stick.appendChild(centerDot);
+          track.appendChild(stick);
+          els.stickArea.appendChild(track);
+          config.element = stick;
+        });
+      }
+
+      function resetStickClasses() {
+        state.stickConfigs.forEach((config) => {
+          if (!config.element) return;
+          config.element.classList.remove('active', 'done');
+          config.element.style.transform = 'translateX(-50%) translateY(0px)';
+        });
+      }
+
+      function getStageMetricsForStick(stickIndex) {
+        const config = state.stickConfigs[stickIndex];
+        const stageRect = els.stage.getBoundingClientRect();
+        const lineRect = els.fixedLine.getBoundingClientRect();
+        const stickRect = config.element.getBoundingClientRect();
+        const targetOffset = stickRect.height * (config.targetPct / 100);
+        const lineCenterY = lineRect.top + lineRect.height / 2 - stageRect.top;
+        return {
+          stageHeight: stageRect.height,
+          lineCenterY,
+          targetOffset
+        };
+      }
+
+      function startGame() {
+        const name = getValidatedName();
+        if (!name) {
+          showToast('名前を入力してください', 1300);
+          els.playerNameInput.focus();
+          return;
+        }
+        saveName(name);
+        state.playerName = name;
+        beginNewGame();
+      }
+
+      function restartGame() {
+        const saved = (localStorage.getItem(NAME_STORAGE_KEY) || '').trim().slice(0, 10);
+        if (!saved) {
+          showScreen('home');
+          showToast('名前を入力してください', 1300);
+          return;
+        }
+        els.playerNameInput.value = saved;
+        state.playerName = saved;
+        beginNewGame();
+      }
+
+      function beginNewGame() {
+        clearTimers();
+        state.phase = 'countdown';
+        state.order = shuffle(Array.from({ length: STICK_COUNT }, (_, i) => i));
+        state.stickConfigs = makeStickConfigs();
+        state.activeIndex = -1;
+        state.activeRound = 0;
+        state.judgedCount = 0;
+        state.totalScore = 0;
+        state.results = [];
+        state.currentY = 0;
+        state.submitStarted = false;
+        state.lastResultMode = 'clear';
+        state.retireProgress = 0;
+        state.lastShareText = '';
+        renderSticks();
+        resetStickClasses();
+        updateHud();
+        setJudgeText('3秒後に始まります');
+        showScreen('game');
+        window.setTimeout(() => {
+          startCountdown(3);
+        }, 80);
+      }
+
+      function startCountdown(count) {
+        state.phase = 'countdown';
+        els.countdown.classList.add('show');
+        els.countdown.textContent = String(count);
+        updateHud();
+        if (count <= 0) {
+          els.countdown.textContent = '開始';
+          state.countdownTimerId = window.setTimeout(() => {
+            els.countdown.classList.remove('show');
+            state.countdownTimerId = 0;
+            setJudgeText('指定エリアのラインを狙ってください');
+            scheduleNextStick();
+          }, 360);
+          return;
+        }
+        state.countdownTimerId = window.setTimeout(() => {
+          startCountdown(count - 1);
+        }, 720);
+      }
+
+      function scheduleNextStick() {
+        if (state.judgedCount >= STICK_COUNT) {
+          finishGame('clear');
+          return;
+        }
+        state.phase = 'between';
+        updateHud();
+        const delay = randInt(MIN_NEXT_DELAY_MS, MAX_NEXT_DELAY_MS);
+        state.nextTimerId = window.setTimeout(() => {
+          state.nextTimerId = 0;
+          const stickIndex = state.order[state.judgedCount];
+          beginStickFall(stickIndex);
+        }, delay);
+      }
+
+      function beginStickFall(stickIndex) {
+        state.phase = 'falling';
+        state.activeIndex = stickIndex;
+        state.activeRound = state.judgedCount + 1;
+        const config = state.stickConfigs[stickIndex];
+        const metrics = getStageMetricsForStick(stickIndex);
+        const targetCenterStart = metrics.targetOffset;
+        const targetCenterAtLine = metrics.lineCenterY;
+        const arrivalMs = randInt(MIN_ARRIVAL_MS, MAX_ARRIVAL_MS);
+        state.startY = 0;
+        state.currentY = state.startY;
+        state.speedPxPerMs = Math.max(0.18, (targetCenterAtLine - targetCenterStart) / arrivalMs);
+        state.startedAt = performance.now();
+
+        config.element.classList.add('active');
+        config.element.style.transform = `translateX(-50%) translateY(${state.currentY}px)`;
+        setJudgeText(`${state.activeRound}本目：${stickIndex + 1}番の棒`);
+        updateHud();
+        state.rafId = requestAnimationFrame(tickFall);
+      }
+
+      function tickFall(now) {
+        if (state.phase !== 'falling' || state.activeIndex < 0) return;
+        const metrics = getStageMetricsForStick(state.activeIndex);
+        const elapsed = now - state.startedAt;
+        state.currentY = state.startY + state.speedPxPerMs * elapsed;
+        const config = state.stickConfigs[state.activeIndex];
+        config.element.style.transform = `translateX(-50%) translateY(${state.currentY}px)`;
+
+        const targetCenterY = state.currentY + metrics.targetOffset;
+        if (targetCenterY > metrics.stageHeight + FAIL_MARGIN_PX) {
+          judgeActiveStick({ timedOut: true });
+          return;
+        }
+        state.rafId = requestAnimationFrame(tickFall);
+      }
+
+      function handleTapArea(event) {
+        event.preventDefault();
+        if (state.phase !== 'falling') return;
+        judgeActiveStick({ timedOut: false });
+      }
+
+      function judgeActiveStick({ timedOut }) {
+        if (state.phase !== 'falling' || state.activeIndex < 0) return;
+        if (state.rafId) {
+          cancelAnimationFrame(state.rafId);
+          state.rafId = 0;
+        }
+
+        const stickIndex = state.activeIndex;
+        const config = state.stickConfigs[stickIndex];
+        const metrics = getStageMetricsForStick(stickIndex);
+        const targetCenterY = state.currentY + metrics.targetOffset;
+        const distance = Math.abs(metrics.lineCenterY - targetCenterY);
+        const score = timedOut ? 0 : clamp(Math.round(MAX_SCORE_PER_STICK - distance * 2), 0, MAX_SCORE_PER_STICK);
+        const evaluation = getEvaluation(score);
+
+        config.element.classList.remove('active');
+        config.element.classList.add('done');
+        config.element.style.transform = `translateX(-50%) translateY(${state.currentY}px)`;
+
+        state.phase = 'judged';
+        state.results.push({
+          round: state.activeRound,
+          stickNumber: stickIndex + 1,
+          score,
+          evaluation,
+          distancePx: Math.round(distance),
+          timedOut
+        });
+        state.judgedCount += 1;
+        state.totalScore = clamp(state.totalScore + score, 0, MAX_TOTAL_SCORE);
+        state.activeIndex = -1;
+        state.activeRound = 0;
+
+        if (timedOut) {
+          setJudgeText(`失敗 0点`);
+        } else {
+          setJudgeText(`${evaluation}！ ${score}点`);
+        }
+        updateHud();
+
+        if (state.judgedCount >= STICK_COUNT) {
+          state.nextTimerId = window.setTimeout(() => {
+            state.nextTimerId = 0;
+            finishGame('clear');
+          }, 420);
+        } else {
+          state.nextTimerId = window.setTimeout(() => {
+            state.nextTimerId = 0;
+            scheduleNextStick();
+          }, 360);
+        }
+      }
+
+      function getEvaluation(score) {
+        if (score >= 100) return '完璧';
+        if (score >= 90) return '神反応';
+        if (score >= 70) return '成功';
+        if (score >= 40) return '惜しい';
+        if (score >= 1) return 'ズレた';
+        return '失敗';
+      }
+
+      function retireGame() {
+        if (!['countdown', 'between', 'falling', 'judged'].includes(state.phase)) return;
+        state.retireProgress = state.phase === 'falling' ? state.activeRound : state.judgedCount;
+        clearTimers();
+        if (state.activeIndex >= 0) {
+          const config = state.stickConfigs[state.activeIndex];
+          if (config && config.element) {
+            config.element.classList.remove('active');
+          }
+        }
+        finishGame('retire');
+      }
+
+      function finishGame(mode) {
+        clearTimers();
+        state.phase = 'finished';
+        state.lastResultMode = mode;
+        if (mode === 'clear') {
+          const best = getBestScore();
+          if (best === null || state.totalScore > best) {
+            setBestScore(state.totalScore);
+          }
+        }
+        renderResult(mode);
+        showScreen('result');
+        updateBestInfo();
+        if (mode === 'clear') {
+          sendScoreOnce().then(() => loadResultRanking());
+        } else {
+          loadResultRanking();
+        }
+      }
+
+      function countEvaluations() {
+        const counts = {
+          '完璧': 0,
+          '神反応': 0,
+          '成功': 0,
+          '惜しい': 0,
+          'ズレた': 0,
+          '失敗': 0
+        };
+        state.results.forEach((result) => {
+          counts[result.evaluation] = (counts[result.evaluation] || 0) + 1;
+        });
+        return counts;
+      }
+
+      function renderResult(mode) {
+        const isClear = mode === 'clear';
+        const total = clamp(state.totalScore, 0, MAX_TOTAL_SCORE);
+        const average = isClear ? (total / STICK_COUNT).toFixed(1) : '-';
+        const counts = countEvaluations();
+
+        resetRankingView();
+
+        els.resultBadge.textContent = isClear ? 'クリア' : 'リタイア';
+        els.finalScoreText.textContent = isClear ? `${total}点` : 'リタイア';
+        const progressForResult = isClear ? state.judgedCount : clamp(state.retireProgress || state.judgedCount, 0, STICK_COUNT);
+        els.resultCaption.textContent = isClear ? `平均 ${average}点 / 800点満点` : `進行 ${progressForResult}/${STICK_COUNT}本目・現在 ${total}点`;
+
+        const summaryItems = isClear ? [
+          ['結果', 'クリア'],
+          ['平均', `${average}点`],
+          ['完璧', `${counts['完璧']}本`],
+          ['神反応', `${counts['神反応']}本`],
+          ['成功', `${counts['成功']}本`],
+          ['惜しい', `${counts['惜しい']}本`],
+          ['ズレた', `${counts['ズレた']}本`],
+          ['失敗', `${counts['失敗']}本`]
+        ] : [
+          ['結果', 'リタイア'],
+          ['進行', `${progressForResult}/${STICK_COUNT}本目`],
+          ['現在スコア', `${total}点`],
+          ['ランキング送信', 'なし']
+        ];
+
+        els.summaryGrid.textContent = '';
+        summaryItems.forEach(([key, value]) => {
+          const item = document.createElement('div');
+          item.className = 'summary-item';
+          const k = document.createElement('span');
+          k.className = 'k';
+          k.textContent = key;
+          const v = document.createElement('span');
+          v.className = 'v';
+          v.textContent = value;
+          item.appendChild(k);
+          item.appendChild(v);
+          els.summaryGrid.appendChild(item);
+        });
+
+        els.resultList.textContent = '';
+        if (state.results.length === 0) {
+          const empty = document.createElement('div');
+          empty.className = 'result-row';
+          empty.innerHTML = '<strong>記録なし</strong><span>判定前にリタイアしました</span><span class="eval">-</span>';
+          els.resultList.appendChild(empty);
+        } else {
+          state.results.forEach((result) => {
+            const row = document.createElement('div');
+            row.className = 'result-row';
+
+            const left = document.createElement('strong');
+            left.textContent = `${result.round}本目`;
+
+            const middle = document.createElement('span');
+            middle.textContent = `棒${result.stickNumber} / ズレ ${result.distancePx}pt`;
+
+            const right = document.createElement('span');
+            right.className = 'eval';
+            right.textContent = `${result.score}点 ${result.evaluation}`;
+
+            row.appendChild(left);
+            row.appendChild(middle);
+            row.appendChild(right);
+            els.resultList.appendChild(row);
+          });
+        }
+
+        if (isClear) {
+          setSubmitStatus('ランキングへ送信中です。', '');
+        } else {
+          setSubmitStatus('リタイアのため、ランキングへは送信しません。', '');
+        }
+        state.lastShareText = buildResultShareText(mode);
+      }
+
+      function setSubmitStatus(message, statusClass) {
+        els.submitStatus.classList.remove('good', 'bad');
+        if (statusClass) els.submitStatus.classList.add(statusClass);
+        els.submitStatus.textContent = message;
+      }
+
+      function resetRankingView() {
+        state.rankingRequestId += 1;
+        els.rankingStatus.textContent = '確認中';
+        els.rankingList.textContent = '';
+        const empty = document.createElement('div');
+        empty.className = 'ranking-empty';
+        empty.textContent = 'ランキングを読み込みます。';
+        els.rankingList.appendChild(empty);
+      }
+
+      function formatRankingScore(score) {
+        const value = Number(score);
+        if (!Number.isFinite(value)) return '-';
+        return `${Math.round(value)}点`;
+      }
+
+      function pickRankingName(row) {
+        const name = row.display_name || row.result_display_name || row.name || row.normalized_name || '';
+        const clean = String(name).trim();
+        return clean || '名無し';
+      }
+
+      function pickRankingScore(row) {
+        const candidates = [
+          row.score,
+          row.best_score,
+          row.result_best_score,
+          row.first_score,
+          row.result_first_score,
+          row.total_score
+        ];
+        for (const candidate of candidates) {
+          const value = Number(candidate);
+          if (Number.isFinite(value)) return value;
+        }
+        return NaN;
+      }
+
+      function pickRankingRank(row, index) {
+        const candidates = [row.rank_no, row.rank, row.ranking, row.position];
+        for (const candidate of candidates) {
+          const value = Number(candidate);
+          if (Number.isFinite(value) && value > 0) return value;
+        }
+        return index + 1;
+      }
+
+      async function callSupabaseRpc(functionName, payload) {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${functionName}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+          },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+      }
+
+      async function fetchBestRanking(limit) {
+        const payloads = [
+          { p_game_slug: GAME_SLUG, p_limit: limit },
+          { p_game_slug: GAME_SLUG, limit },
+          { game_slug: GAME_SLUG, limit },
+          { p_game_slug: GAME_SLUG }
+        ];
+        let lastError = null;
+        for (const payload of payloads) {
+          try {
+            const data = await callSupabaseRpc('get_best_score_ranking', payload);
+            return Array.isArray(data) ? data.slice(0, limit) : [];
+          } catch (error) {
+            lastError = error;
+          }
+        }
+        throw lastError || new Error('ranking fetch failed');
+      }
+
+      function renderRankingRows(rows) {
+        els.rankingList.textContent = '';
+        if (!rows.length) {
+          const empty = document.createElement('div');
+          empty.className = 'ranking-empty';
+          empty.textContent = 'まだランキングがありません。クリアするとここに表示されます。';
+          els.rankingList.appendChild(empty);
+          return;
+        }
+
+        rows.forEach((row, index) => {
+          const line = document.createElement('div');
+          line.className = 'ranking-row';
+
+          const rank = document.createElement('span');
+          rank.className = 'ranking-rank';
+          rank.textContent = `${pickRankingRank(row, index)}位`;
+
+          const name = document.createElement('span');
+          name.className = 'ranking-name';
+          name.textContent = pickRankingName(row);
+
+          const score = document.createElement('span');
+          score.className = 'ranking-score';
+          score.textContent = formatRankingScore(pickRankingScore(row));
+
+          line.appendChild(rank);
+          line.appendChild(name);
+          line.appendChild(score);
+          els.rankingList.appendChild(line);
+        });
+      }
+
+      async function loadResultRanking() {
+        const requestId = state.rankingRequestId;
+        try {
+          const rows = await fetchBestRanking(RANKING_LIMIT);
+          if (requestId !== state.rankingRequestId) return;
+          els.rankingStatus.textContent = `上位${RANKING_LIMIT}件`;
+          renderRankingRows(rows);
+        } catch (error) {
+          if (requestId !== state.rankingRequestId) return;
+          els.rankingStatus.textContent = '取得失敗';
+          els.rankingList.textContent = '';
+          const empty = document.createElement('div');
+          empty.className = 'ranking-empty';
+          empty.textContent = 'ランキングを読み込めませんでした。プレイ結果はこの画面で確認できます。';
+          els.rankingList.appendChild(empty);
+        }
+      }
+
+      async function sendScoreOnce() {
+        if (state.submitStarted) return;
+        state.submitStarted = true;
+        const score = clamp(state.totalScore, 0, MAX_TOTAL_SCORE);
+        try {
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/submit_score`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_PUBLISHABLE_KEY,
+              'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+            },
+            body: JSON.stringify({
+              p_display_name: state.playerName,
+              p_game_slug: GAME_SLUG,
+              p_score: score,
+              p_client_version: CLIENT_VERSION
+            })
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          const data = await response.json().catch(() => null);
+          const result = Array.isArray(data) ? data[0] : data;
+          if (result && result.accepted === false) {
+            setSubmitStatus('ランキング送信は受け付けられませんでした。名前やスコアは画面で確認できます。', 'bad');
+            return;
+          }
+          const bestLabel = result && result.is_new_best ? '自己ベスト更新。' : '';
+          setSubmitStatus(`ランキングへ送信しました。${bestLabel}`.trim(), 'good');
+        } catch (error) {
+          setSubmitStatus('ランキング送信に失敗しました。結果画面はそのまま使えます。', 'bad');
+        }
+      }
+
+      function buildHomeShareText() {
+        return `${GAME_TITLE}\n落ちてくる棒を、ラインぴったりで止める反射神経ゲーム。\n${GAME_URL}`;
+      }
+
+      function buildResultShareText(mode) {
+        if (mode === 'retire') {
+          return `${GAME_TITLE} 結果\n結果：リタイア\n進行：${clamp(state.retireProgress || state.judgedCount, 0, STICK_COUNT)}/${STICK_COUNT}本目\n現在スコア：${state.totalScore}点`;
+        }
+        const counts = countEvaluations();
+        const average = (state.totalScore / STICK_COUNT).toFixed(1);
+        return `${GAME_TITLE} 結果\n結果：クリア\n最終スコア：${state.totalScore}点\n平均：${average}点\n完璧：${counts['完璧']}本\n神反応：${counts['神反応']}本\n失敗：${counts['失敗']}本`;
+      }
+
+      async function copyText(text) {
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (error) {
+          // fallback below
+        }
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        textarea.style.top = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        let ok = false;
+        try {
+          ok = document.execCommand('copy');
+        } catch (error) {
+          ok = false;
+        }
+        document.body.removeChild(textarea);
+        return ok;
+      }
+
+      async function shareHome() {
+        const ok = await copyText(buildHomeShareText());
+        showToast(ok ? 'クリップボードにコピーしました' : 'コピーできませんでした');
+      }
+
+      async function shareResult() {
+        const text = state.lastShareText || buildResultShareText(state.lastResultMode);
+        const ok = await copyText(text);
+        showToast(ok ? 'クリップボードにコピーしました' : 'コピーできませんでした');
+      }
+
+      function openRules() {
+        els.rulesModal.classList.add('open');
+      }
+
+      function closeRules() {
+        els.rulesModal.classList.remove('open');
+      }
+
+      function returnHome() {
+        clearTimers();
+        state.phase = 'home';
+        updateBestInfo();
+        showScreen('home');
+      }
+
+      function bindEvents() {
+        els.startButton.addEventListener('click', startGame);
+        els.restartButton.addEventListener('click', restartGame);
+        els.finishButton.addEventListener('click', returnHome);
+        els.retireButton.addEventListener('click', retireGame);
+        els.rulesButton.addEventListener('click', openRules);
+        els.closeRulesButton.addEventListener('click', closeRules);
+        els.rulesModal.addEventListener('click', (event) => {
+          if (event.target === els.rulesModal) closeRules();
+        });
+        els.homeShareButton.addEventListener('click', shareHome);
+        els.resultShareButton.addEventListener('click', shareResult);
+        els.tapArea.addEventListener('pointerdown', handleTapArea, { passive: false });
+        els.playerNameInput.addEventListener('input', () => {
+          if (els.playerNameInput.value.length > 10) {
+            els.playerNameInput.value = els.playerNameInput.value.slice(0, 10);
+          }
+        });
+      }
+
+      function installMobileGuards() {
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+          const now = Date.now();
+          if (now - lastTouchEnd <= 320) {
+            event.preventDefault();
+          }
+          lastTouchEnd = now;
+        }, { passive: false });
+
+        document.addEventListener('touchmove', (event) => {
+          if (event.touches && event.touches.length > 1) {
+            event.preventDefault();
+            return;
+          }
+          if (state.screen === 'game') {
+            event.preventDefault();
+          }
+        }, { passive: false });
+
+        document.addEventListener('gesturestart', (event) => {
+          event.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('contextmenu', (event) => {
+          if (!event.target.closest('input, textarea, a')) {
+            event.preventDefault();
+          }
+        });
+      }
+
+      function init() {
+        loadSavedName();
+        updateBestInfo();
+        bindEvents();
+        installMobileGuards();
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
