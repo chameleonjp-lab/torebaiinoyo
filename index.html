@@ -666,6 +666,13 @@
       white-space: nowrap;
     }
 
+    #rankingRetryButton {
+      margin-top: 8px;
+      min-height: 44px;
+    }
+
+    #rankingRetryButton[hidden] { display: none; }
+
     .ranking-list {
       display: grid;
       gap: 7px;
@@ -802,110 +809,135 @@
         min-height: 246px;
       }
     }
-  </style>
+    .home-language { display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; margin:0 0 12px; text-align:left; }
+    .home-language select { min-height:44px; max-width:100%; font:inherit; color:inherit; background:transparent; border:1px solid currentColor; border-radius:8px; padding:4px 8px; }
+    .home-language option { color:#191919; background:#fff; }
+    html:not(:lang(ja)) .button-grid.two,
+    html:not(:lang(ja)) .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    html:not(:lang(ja)) .hud { grid-template-columns:minmax(0,1fr) minmax(70px,27%); }
+    html:not(:lang(ja)) .hud-panel { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    html:not(:lang(ja)) .hud-value { white-space:normal; }
+    html:not(:lang(ja)) .result-row { grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr); }
+    html:not(:lang(ja)) :is(.btn,.retire-btn,.hud-value,.summary-item,.result-row,.score-big .value,.result-title) { overflow-wrap:anywhere; }
+  
+    #homeShareButton, #resultShareButton, #shareGameBtn, #shareResultBtn {
+      background: #000;
+      color: #fff;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+</style>
 </head>
 <body>
   <div class="app">
-    <main id="homeScreen" class="screen active" aria-label="ホーム画面">
+    <main id="homeScreen" class="screen active" aria-label="ホーム画面" data-l10n-aria-label="home">
       <div class="page">
         <section class="home-card">
-          <span class="eyebrow">8本勝負・反射神経ゲーム</span>
+          <div class="home-language">
+            <label for="languageSelect" data-l10n="language">言語</label>
+            <select id="languageSelect" autocomplete="off"></select>
+          </div>
+          <span class="eyebrow" data-l10n="eyebrow">8本勝負・反射神経ゲーム</span>
           <h1>取れば<br>いいのよ</h1>
           <p class="lead">
-            落ちてくる棒を、ラインぴったりで止める反射神経ゲームです。<br>
-            8本の棒がランダムな順番とリズムで落ちてきます。<br>
-            指定エリアの中心をラインに近づけるほど高得点です。
+            <span data-l10n="lead1">落ちてくる棒を、ラインぴったりで止める反射神経ゲームです。</span><br>
+            <span data-l10n="lead2">8本の棒がランダムな順番とリズムで落ちてきます。</span><br>
+            <span data-l10n="lead3">指定エリアの中心をラインに近づけるほど高得点です。</span>
           </p>
 
-          <div class="info-box" id="bestInfo">ランキングはクリア時に自動送信します。</div>
+          <div class="info-box" id="bestInfo" data-l10n="bestEmpty">名前を入れて開始した完走のみランキング送信します。自己ベストはこの端末にも保存します。</div>
 
           <div class="name-row">
-            <label for="playerNameInput">ランキング用の名前（10文字まで）</label>
-            <input id="playerNameInput" type="text" maxlength="10" autocomplete="nickname" placeholder="名前を入力">
+            <label for="playerNameInput" data-l10n="nameLabel">ランキング用の名前（任意・10文字まで）</label>
+            <input id="playerNameInput" type="text" maxlength="10" autocomplete="nickname" placeholder="空欄でもプレイできます" data-l10n-placeholder="namePlaceholder">
+            <button id="clearNameButton" class="btn secondary" type="button" data-l10n="clearSavedName">保存した名前を消す</button>
           </div>
 
           <div class="button-grid">
-            <button id="startButton" class="btn primary" type="button">ゲーム開始</button>
+            <button id="startButton" class="btn primary" type="button" data-l10n="start">ゲーム開始</button>
             <div class="button-grid two">
-              <button id="rulesButton" class="btn secondary" type="button">ルール説明</button>
-              <button id="homeShareButton" class="btn secondary" type="button">ゲームをシェア</button>
+              <button id="rulesButton" class="btn secondary" type="button" data-l10n="rules">ルール説明</button>
+              <button id="homeShareButton" class="btn secondary" type="button" data-l10n="shareX">Xでシェア</button>
             </div>
-            <a class="btn linkish" href="https://chameleonjp.codeberg.page/chameleonjp_lab/">その他のゲームへ</a>
+            <a id="homeRankingLink" class="btn linkish" href="https://chameleonjp-lab.github.io/chameleonjp_lab/ranking.html?game=toreba_iinoyo" target="_blank" rel="noopener noreferrer" data-l10n="ranking">ランキング</a>
+            <a class="btn linkish" href="https://chameleonjp.codeberg.page/chameleonjp_lab/" data-l10n="other">その他のゲームへ</a>
           </div>
-          <p class="small-note">空白だけの名前では開始できません。名前はこの端末に保存します。</p>
+          <p class="small-note" data-l10n="guestNote">名前なしでも遊べます。開始時に有効な名前がある場合のみ、完走結果をランキングへ送信します。</p>
         </section>
       </div>
     </main>
 
-    <main id="gameScreen" class="screen" aria-label="ゲーム画面">
+    <main id="gameScreen" class="screen" aria-label="ゲーム画面" data-l10n-aria-label="game">
       <div class="game-page">
         <header class="hud">
           <div class="hud-panel" aria-live="polite">
             <div class="hud-item">
-              <span class="hud-label">本数</span>
+              <span class="hud-label" data-l10n="sticks">本数</span>
               <span id="progressText" class="hud-value">0/8</span>
             </div>
             <div class="hud-item">
-              <span class="hud-label">スコア</span>
-              <span id="scoreText" class="hud-value">0点</span>
+              <span class="hud-label" data-l10n="score">スコア</span>
+              <span id="scoreText" class="hud-value" data-l10n="points:0">0点</span>
             </div>
             <div class="hud-item">
-              <span class="hud-label">次</span>
+              <span class="hud-label" data-l10n="next">次</span>
               <span id="nextStickText" class="hud-value">-</span>
             </div>
           </div>
-          <button id="retireButton" class="retire-btn" type="button">リタイア</button>
+          <button id="retireButton" class="retire-btn" type="button" data-l10n="retire">リタイア</button>
         </header>
 
-        <section id="stage" class="stage" aria-label="棒の落下エリア">
+        <section id="stage" class="stage" aria-label="棒の落下エリア" data-l10n-aria-label="stage">
           <div id="stickArea" class="stick-area"></div>
           <div id="fixedLine" class="fixed-line" aria-hidden="true"></div>
           <div id="countdown" class="countdown" aria-hidden="true">3</div>
         </section>
 
-        <div id="judgeText" class="judge-pop" aria-live="polite">タップエリアで取ります</div>
+        <div id="judgeText" class="judge-pop" aria-live="polite" data-l10n="judgeInitial">タップエリアで取ります</div>
 
-        <button id="tapArea" class="tap-area" type="button" aria-label="ここで取る">
-          <span class="tap-main">ここで取る</span>
-          <span class="tap-sub">落ちている棒だけ判定します</span>
+        <button id="tapArea" class="tap-area" type="button" aria-label="ここで取る" data-l10n-aria-label="catch">
+          <span class="tap-main" data-l10n="catch">ここで取る</span>
+          <span class="tap-sub" data-l10n="catchNote">落ちている棒だけ判定します</span>
         </button>
       </div>
     </main>
 
-    <main id="resultScreen" class="screen" aria-label="結果画面">
+    <main id="resultScreen" class="screen" aria-label="結果画面" data-l10n-aria-label="results">
       <div class="page">
         <section class="result-card">
           <div class="result-title">
-            <h2>結果</h2>
-            <span id="resultBadge" class="eyebrow">クリア</span>
+            <h2 data-l10n="results">結果</h2>
+            <span id="resultBadge" class="eyebrow" data-l10n="clear">クリア</span>
           </div>
 
           <div class="score-big">
-            <span id="finalScoreText" class="value">0点</span>
-            <span id="resultCaption" class="caption">8本合計</span>
+            <span id="finalScoreText" class="value" data-l10n="points:0">0点</span>
+            <span id="resultCaption" class="caption" data-l10n="totalCaption">8本合計</span>
           </div>
 
           <div id="summaryGrid" class="summary-grid"></div>
           <div id="resultList" class="result-list"></div>
-          <div id="submitStatus" class="submit-status">ランキング送信待ちです。</div>
+          <div id="submitStatus" class="submit-status" data-l10n="submitWaiting">ランキング送信待ちです。</div>
 
-          <section class="ranking-panel" aria-label="ランキング">
+          <section class="ranking-panel" aria-label="ランキング" data-l10n-aria-label="ranking">
             <div class="ranking-head">
-              <h3>ランキング</h3>
-              <span id="rankingStatus" class="ranking-status">確認中</span>
+              <h3 data-l10n="ranking">ランキング</h3>
+              <span id="rankingStatus" class="ranking-status" role="status" data-l10n="checking">確認中</span>
             </div>
-            <div id="rankingList" class="ranking-list" aria-live="polite">
-              <div class="ranking-empty">ランキングを読み込みます。</div>
+            <div id="rankingList" class="ranking-list" aria-live="polite" aria-busy="false">
+              <div class="ranking-empty" data-l10n="loading">ランキングを読み込みます。</div>
             </div>
+            <button id="rankingRetryButton" class="btn secondary" type="button" aria-controls="rankingList" data-l10n="retryRank" hidden>ランキングを再読み込み</button>
           </section>
 
           <div class="button-grid">
-            <button id="resultShareButton" class="btn primary" type="button">ゲーム結果をシェア</button>
+            <button id="resultShareButton" class="btn primary" type="button" data-l10n="shareX">Xでシェア</button>
+            <a id="resultRankingLink" class="btn linkish" href="https://chameleonjp-lab.github.io/chameleonjp_lab/ranking.html?game=toreba_iinoyo" target="_blank" rel="noopener noreferrer" data-l10n="ranking">ランキング</a>
             <div class="button-grid two">
-              <button id="restartButton" class="btn secondary" type="button">もう一度遊ぶ</button>
-              <button id="finishButton" class="btn secondary" type="button">ゲーム終了</button>
+              <button id="restartButton" class="btn secondary" type="button" data-l10n="retry">もう一度遊ぶ</button>
+              <button id="finishButton" class="btn secondary" type="button" data-l10n="finish">ゲーム終了</button>
             </div>
-            <a class="btn linkish" href="https://chameleonjp.codeberg.page/chameleonjp_lab/">その他のゲームへ</a>
+            <a class="btn linkish" href="https://chameleonjp.codeberg.page/chameleonjp_lab/" data-l10n="other">その他のゲームへ</a>
           </div>
         </section>
       </div>
@@ -914,15 +946,15 @@
 
   <div id="rulesModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
     <section class="modal-card">
-      <h2 id="rulesTitle">ルール説明</h2>
+      <h2 id="rulesTitle" data-l10n="rules">ルール説明</h2>
       <p>
-        8本の棒が1本ずつ落ちてきます。<br>
-        画面下のタップエリアを押すと、落ちている棒を取ります。<br>
-        棒の指定エリア中心がラインに近いほど高得点です。<br>
-        1本100点、8本合計800点満点です。
+        <span data-l10n="rule1">8本の棒が1本ずつ落ちてきます。</span><br>
+        <span data-l10n="rule2">画面下のタップエリアを押すと、落ちている棒を取ります。</span><br>
+        <span data-l10n="rule3">棒の指定エリア中心がラインに近いほど高得点です。</span><br>
+        <span data-l10n="rule4">1本100点、8本合計800点満点です。</span>
       </p>
       <div class="button-grid">
-        <button id="closeRulesButton" class="btn primary" type="button">閉じる</button>
+        <button id="closeRulesButton" class="btn primary" type="button" data-l10n="close">閉じる</button>
       </div>
     </section>
   </div>
@@ -949,16 +981,1492 @@
       const MAX_ARRIVAL_MS = 450;
       const TARGET_HALF_GAP_PX = 12;
       const FAIL_MARGIN_PX = 24;
-      const RANKING_LIMIT = 5;
+      const RANKING_LIMIT = 30;
 
       const NAME_STORAGE_KEY = 'toreba_iinoyo_player_name_v1';
       const BEST_STORAGE_KEY = 'toreba_iinoyo_best_score_v1';
+
+
+      const LANG_KEY = 'toreba_iinoyo_language';
+      const LANG_NAMES = {"ja": "日本語", "en": "English", "es": "Español", "pt-BR": "Português (Brasil)", "zh-Hans": "简体中文", "fr": "Français", "de": "Deutsch", "ko": "한국어", "ru": "Русский", "it": "Italiano", "zh-Hant": "繁體中文", "id": "Bahasa Indonesia", "tr": "Türkçe", "vi": "Tiếng Việt", "th": "ไทย"};
+      const TEXT = {
+  "ja": {
+    "language": "言語",
+    "home": "ホーム画面",
+    "eyebrow": "8本勝負・反射神経ゲーム",
+    "lead1": "落ちてくる棒を、ラインぴったりで止める反射神経ゲームです。",
+    "lead2": "8本の棒がランダムな順番とリズムで落ちてきます。",
+    "lead3": "指定エリアの中心をラインに近づけるほど高得点です。",
+    "bestEmpty": "名前を入れて開始した完走のみランキング送信します。自己ベストはこの端末にも保存します。",
+    "bestWith": "自己ベスト：{score} / {max}。名前を入れて開始した完走のみランキング送信します。",
+    "nameLabel": "ランキング用の名前（任意・10文字まで）",
+    "namePlaceholder": "空欄でもプレイできます",
+    "clearSavedName": "保存した名前を消す",
+    "nameStorageError": "保存済みの名前を変更できませんでした。ブラウザの保存設定を確認してください。",
+    "start": "ゲーム開始",
+    "rules": "ルール説明",
+    "shareGame": "ゲームをシェア",
+    "shareX": "Xでシェア",
+    "shareManualCopy": "投稿画面が開けませんでした。この文章をコピーしてください。",
+    "other": "その他のゲームへ",
+    "guestNote": "名前なしでも遊べます。開始時に有効な名前がある場合のみ、完走結果をランキングへ送信します。",
+    "game": "ゲーム画面",
+    "sticks": "本数",
+    "score": "スコア",
+    "next": "次",
+    "retire": "リタイア",
+    "stage": "棒の落下エリア",
+    "judgeInitial": "タップエリアで取ります",
+    "catch": "ここで取る",
+    "catchNote": "落ちている棒だけ判定します",
+    "results": "結果",
+    "clear": "クリア",
+    "totalCaption": "8本合計",
+    "submitWaiting": "ランキング送信待ちです。",
+    "ranking": "ランキング",
+    "checking": "確認中",
+    "loading": "ランキングを読み込みます。",
+    "shareResult": "ゲーム結果をシェア",
+    "retry": "もう一度遊ぶ",
+    "finish": "ゲーム終了",
+    "rule1": "8本の棒が1本ずつ落ちてきます。",
+    "rule2": "画面下のタップエリアを押すと、落ちている棒を取ります。",
+    "rule3": "棒の指定エリア中心がラインに近いほど高得点です。",
+    "rule4": "1本100点、8本合計800点満点です。",
+    "close": "閉じる",
+    "points": "{n}点",
+    "number": "{n}番",
+    "ready": "準備",
+    "done": "完了",
+    "countdown": "3秒後に始まります",
+    "go": "開始",
+    "aim": "指定エリアのラインを狙ってください",
+    "round": "{round}本目：{stick}番の棒",
+    "judged": "{judgment}！ {points}",
+    "perfect": "完璧",
+    "god": "神反応",
+    "success": "成功",
+    "near": "惜しい",
+    "off": "ズレた",
+    "miss": "失敗",
+    "average": "平均",
+    "clearCaption": "平均 {average} / 800点満点",
+    "retireCaption": "進行 {round}/{total}本目・現在 {points}",
+    "quantity": "{n}本",
+    "progress": "進行",
+    "progressValue": "{round}/{total}本目",
+    "currentScore": "現在スコア",
+    "submission": "ランキング送信",
+    "none": "なし",
+    "noRecord": "記録なし",
+    "earlyQuit": "判定前にリタイアしました",
+    "roundName": "{n}本目",
+    "detail": "棒{stick} / ズレ {distance}pt",
+    "detailScore": "{points} {judgment}",
+    "submitting": "ランキングへ送信中です。",
+    "guestSkip": "名前なしで開始したため、ランキングには送信しません。",
+    "retireSkip": "リタイアのため、ランキングへは送信しません。",
+    "anonymous": "名無し",
+    "emptyRank": "まだランキングがありません。クリアするとここに表示されます。",
+    "rank": "{n}位",
+    "top": "上位{n}件",
+    "fetchFail": "取得失敗",
+    "retryRank": "ランキングを再読み込み",
+    "fetchNote": "ランキングを読み込めませんでした。プレイ結果はこの画面で確認できます。",
+    "submitReject": "ランキング送信は受け付けられませんでした。名前やスコアは画面で確認できます。",
+    "newBest": "自己ベスト更新。",
+    "submitSuccess": "ランキングへ送信しました。",
+    "submitError": "ランキング送信に失敗しました。結果画面はそのまま使えます。",
+    "shareDesc": "落ちてくる棒を、ラインぴったりで止める反射神経ゲーム。",
+    "shareTitle": "{title} 結果",
+    "shareLine": "{label}：{value}",
+    "finalScore": "最終スコア",
+    "copied": "クリップボードにコピーしました",
+    "copyError": "コピーできませんでした"
+  },
+  "en": {
+    "language": "Language",
+    "home": "Home",
+    "eyebrow": "Eight sticks • Reaction game",
+    "lead1": "Catch each falling stick exactly at the line.",
+    "lead2": "Eight sticks fall in random order and at random intervals.",
+    "lead3": "The closer the center of the target zone is to the line, the more points you earn.",
+    "bestEmpty": "Only completed runs started with a valid name are sent to the leaderboard. Your personal best is also saved on this device.",
+    "bestWith": "Personal best: {score} / {max}. Only completed runs started with a valid name are sent to the leaderboard.",
+    "nameLabel": "Leaderboard name (optional, up to 10 characters)",
+    "namePlaceholder": "Leave blank to play as a guest",
+    "clearSavedName": "Clear saved name",
+    "nameStorageError": "Could not change the saved name. Check your browser storage settings.",
+    "start": "Start game",
+    "rules": "How to play",
+    "shareGame": "Share game",
+    "shareX": "Share on X",
+    "shareManualCopy": "The composer did not open. Copy this text.",
+    "other": "Other games",
+    "guestNote": "You can play without a name. Only completed runs started with a valid name are sent to the leaderboard.",
+    "game": "Game",
+    "sticks": "Sticks",
+    "score": "Score",
+    "next": "Next",
+    "retire": "Quit run",
+    "stage": "Stick drop area",
+    "judgeInitial": "Tap the catch area to catch the stick",
+    "catch": "Catch here",
+    "catchNote": "Only a falling stick can be caught",
+    "results": "Results",
+    "clear": "Completed",
+    "totalCaption": "Total for eight sticks",
+    "submitWaiting": "Waiting to submit to the leaderboard.",
+    "ranking": "Leaderboard",
+    "checking": "Checking",
+    "loading": "Loading the leaderboard…",
+    "shareResult": "Share result",
+    "retry": "Play again",
+    "finish": "Exit game",
+    "rule1": "Eight sticks fall one at a time.",
+    "rule2": "Tap the catch area at the bottom to catch a falling stick.",
+    "rule3": "The closer the center of the target zone is to the line, the more points you earn.",
+    "rule4": "Earn up to 100 points per stick, or 800 in total across eight sticks.",
+    "close": "Close",
+    "points": "{n} pts",
+    "number": "No. {n}",
+    "ready": "Get ready",
+    "done": "Done",
+    "countdown": "Starting in 3 seconds",
+    "go": "Go!",
+    "aim": "Aim for the line in the target zone",
+    "round": "Stick {round}: No. {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "Perfect",
+    "god": "Lightning reflexes",
+    "success": "Caught",
+    "near": "Close",
+    "off": "Off target",
+    "miss": "Missed",
+    "average": "Average",
+    "clearCaption": "Average: {average} / 800 pts max",
+    "retireCaption": "Progress: {round}/{total} • Score: {points}",
+    "quantity": "{n}",
+    "progress": "Progress",
+    "progressValue": "{round}/{total} sticks",
+    "currentScore": "Current score",
+    "submission": "Leaderboard submission",
+    "none": "None",
+    "noRecord": "No catches recorded",
+    "earlyQuit": "You quit before the first attempt was scored",
+    "roundName": "Stick {n}",
+    "detail": "Stick {stick} / Offset {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Submitting to the leaderboard…",
+    "guestSkip": "No leaderboard submission: you started without a name.",
+    "retireSkip": "No leaderboard submission: you quit this run.",
+    "anonymous": "Anonymous",
+    "emptyRank": "There are no leaderboard entries yet. Complete a run to appear here.",
+    "rank": "#{n}",
+    "top": "Top {n}",
+    "fetchFail": "Could not load",
+    "retryRank": "Retry leaderboard",
+    "fetchNote": "The leaderboard could not be loaded. Your result is still available on this screen.",
+    "submitReject": "The leaderboard did not accept your submission. You can still see your name and score here.",
+    "newBest": "New personal best!",
+    "submitSuccess": "Submitted to the leaderboard.",
+    "submitError": "Could not submit to the leaderboard. Your results screen still works.",
+    "shareDesc": "A reaction game: catch each falling stick right on the line.",
+    "shareTitle": "{title} results",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Final score",
+    "copied": "Copied to clipboard",
+    "copyError": "Could not copy"
+  },
+  "es": {
+    "language": "Idioma",
+    "home": "Inicio",
+    "eyebrow": "Ocho varillas • Juego de reflejos",
+    "lead1": "Atrapa cada varilla que cae justo en la línea.",
+    "lead2": "Las ocho varillas caen en orden y a intervalos aleatorios.",
+    "lead3": "Cuanto más cerca esté el centro de la zona objetivo de la línea, más puntos conseguirás.",
+    "bestEmpty": "Solo se envían a la clasificación las partidas completadas que empezaron con un nombre válido. Tu récord personal también se guarda en este dispositivo.",
+    "bestWith": "Récord personal: {score} / {max}. Solo se envían a la clasificación las partidas completadas que empezaron con un nombre válido.",
+    "nameLabel": "Nombre para la clasificación (opcional, hasta 10 caracteres)",
+    "namePlaceholder": "Déjalo en blanco para jugar sin nombre",
+    "clearSavedName": "Borrar nombre guardado",
+    "nameStorageError": "No se pudo cambiar el nombre guardado. Revisa los ajustes de almacenamiento del navegador.",
+    "start": "Empezar partida",
+    "rules": "Cómo jugar",
+    "shareGame": "Compartir juego",
+    "shareX": "Compartir en X",
+    "shareManualCopy": "No se abrió el editor. Copia este texto.",
+    "other": "Otros juegos",
+    "guestNote": "Puedes jugar sin nombre. Solo se envían a la clasificación las partidas completadas que empezaron con un nombre válido.",
+    "game": "Partida",
+    "sticks": "Varillas",
+    "score": "Puntuación",
+    "next": "Siguiente",
+    "retire": "Abandonar partida",
+    "stage": "Zona de caída de las varillas",
+    "judgeInitial": "Toca la zona de captura para atrapar la varilla",
+    "catch": "Atrapar aquí",
+    "catchNote": "Solo puedes atrapar una varilla mientras cae",
+    "results": "Resultados",
+    "clear": "Partida completada",
+    "totalCaption": "Total de las ocho varillas",
+    "submitWaiting": "Pendiente de envío a la clasificación.",
+    "ranking": "Clasificación",
+    "checking": "Comprobando",
+    "loading": "Cargando la clasificación…",
+    "shareResult": "Compartir resultado",
+    "retry": "Volver a jugar",
+    "finish": "Salir del juego",
+    "rule1": "Caen ocho varillas, de una en una.",
+    "rule2": "Toca la zona de captura de la parte inferior para atrapar una varilla mientras cae.",
+    "rule3": "Cuanto más cerca esté el centro de la zona objetivo de la línea, más puntos conseguirás.",
+    "rule4": "Consigue hasta 100 puntos por varilla o hasta 800 en total entre las ocho.",
+    "close": "Cerrar",
+    "points": "{n} pts",
+    "number": "N.º {n}",
+    "ready": "Prepárate",
+    "done": "Listo",
+    "countdown": "Empezamos en 3 segundos",
+    "go": "¡Ya!",
+    "aim": "Apunta a la línea de la zona objetivo",
+    "round": "Varilla {round}: n.º {stick}",
+    "judged": "¡{judgment}! {points}",
+    "perfect": "Perfecto",
+    "god": "Reflejos fulminantes",
+    "success": "Atrapada",
+    "near": "Por poco",
+    "off": "Fuera del objetivo",
+    "miss": "Fallaste",
+    "average": "Promedio",
+    "clearCaption": "Promedio: {average} / 800 pts máx.",
+    "retireCaption": "Progreso: {round}/{total} • Puntuación: {points}",
+    "quantity": "{n}",
+    "progress": "Progreso",
+    "progressValue": "{round}/{total} varillas",
+    "currentScore": "Puntuación actual",
+    "submission": "Envío a la clasificación",
+    "none": "Ninguno",
+    "noRecord": "No se registró ninguna captura",
+    "earlyQuit": "Saliste antes de que se puntuara el primer intento",
+    "roundName": "Varilla {n}",
+    "detail": "Varilla {stick} / Desviación de {distance} pts",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Enviando a la clasificación…",
+    "guestSkip": "No se envía a la clasificación: empezaste sin nombre.",
+    "retireSkip": "No se envía a la clasificación: abandonaste la partida.",
+    "anonymous": "Anónimo",
+    "emptyRank": "Todavía no hay entradas en la clasificación. Completa una partida para aparecer aquí.",
+    "rank": "#{n}",
+    "top": "Top {n}",
+    "fetchFail": "No se pudo cargar",
+    "retryRank": "Volver a cargar la clasificación",
+    "fetchNote": "No se pudo cargar la clasificación. Tu resultado sigue disponible en esta pantalla.",
+    "submitReject": "La clasificación rechazó el envío. Aún puedes ver tu nombre y tu puntuación aquí.",
+    "newBest": "¡Nuevo récord personal!",
+    "submitSuccess": "Resultado enviado a la clasificación.",
+    "submitError": "No se pudo enviar el resultado a la clasificación. Tu pantalla de resultados sigue disponible.",
+    "shareDesc": "Un juego de reflejos: atrapa cada varilla que cae justo en la línea.",
+    "shareTitle": "Resultados de {title}",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Puntuación final",
+    "copied": "Copiado al portapapeles",
+    "copyError": "No se pudo copiar"
+  },
+  "pt-BR": {
+    "language": "Idioma",
+    "home": "Início",
+    "eyebrow": "Oito varetas • Jogo de reflexos",
+    "lead1": "Pegue cada vareta que cai bem na linha.",
+    "lead2": "As oito varetas caem em ordem e em intervalos aleatórios.",
+    "lead3": "Quanto mais perto da linha estiver o centro da área-alvo, mais pontos você ganha.",
+    "bestEmpty": "Só as partidas concluídas que começaram com um nome válido são enviadas ao ranking. Seu recorde pessoal também é salvo neste dispositivo.",
+    "bestWith": "Recorde pessoal: {score} / {max}. Só as partidas concluídas que começaram com um nome válido são enviadas ao ranking.",
+    "nameLabel": "Nome para o ranking (opcional, até 10 caracteres)",
+    "namePlaceholder": "Deixe em branco para jogar sem nome",
+    "clearSavedName": "Apagar nome salvo",
+    "nameStorageError": "Não foi possível alterar o nome salvo. Confira as configurações de armazenamento do navegador.",
+    "start": "Começar partida",
+    "rules": "Como jogar",
+    "shareGame": "Compartilhar jogo",
+    "shareX": "Compartilhar no X",
+    "shareManualCopy": "O editor não abriu. Copie este texto.",
+    "other": "Outros jogos",
+    "guestNote": "Você pode jogar sem nome. Só as partidas concluídas que começaram com um nome válido são enviadas ao ranking.",
+    "game": "Partida",
+    "sticks": "Varetas",
+    "score": "Pontuação",
+    "next": "Próxima",
+    "retire": "Abandonar partida",
+    "stage": "Área de queda das varetas",
+    "judgeInitial": "Toque na área de captura para pegar a vareta",
+    "catch": "Pegar aqui",
+    "catchNote": "Você só pode pegar a vareta enquanto ela estiver caindo",
+    "results": "Resultados",
+    "clear": "Partida concluída",
+    "totalCaption": "Total das oito varetas",
+    "submitWaiting": "Aguardando envio ao ranking.",
+    "ranking": "Ranking",
+    "checking": "Verificando",
+    "loading": "Carregando o ranking…",
+    "shareResult": "Compartilhar resultado",
+    "retry": "Jogar de novo",
+    "finish": "Sair do jogo",
+    "rule1": "Oito varetas caem, uma de cada vez.",
+    "rule2": "Toque na área de captura na parte de baixo para pegar uma vareta em queda.",
+    "rule3": "Quanto mais perto da linha estiver o centro da área-alvo, mais pontos você ganha.",
+    "rule4": "Você pode ganhar até 100 pontos por vareta, ou 800 no total com as oito.",
+    "close": "Fechar",
+    "points": "{n} pts",
+    "number": "Nº {n}",
+    "ready": "Prepare-se",
+    "done": "Pronto",
+    "countdown": "Começa em 3 segundos",
+    "go": "Agora!",
+    "aim": "Mire na linha da área-alvo",
+    "round": "Vareta {round}: nº {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "Perfeito",
+    "god": "Reflexos relâmpago",
+    "success": "Pegou",
+    "near": "Quase",
+    "off": "Fora do alvo",
+    "miss": "Perdeu",
+    "average": "Média",
+    "clearCaption": "Média: {average} / até 800 pts",
+    "retireCaption": "Progresso: {round}/{total} • Pontuação: {points}",
+    "quantity": "{n}",
+    "progress": "Progresso",
+    "progressValue": "{round}/{total} varetas",
+    "currentScore": "Pontuação atual",
+    "submission": "Envio ao ranking",
+    "none": "Nenhum",
+    "noRecord": "Nenhuma captura registrada",
+    "earlyQuit": "Você saiu antes que a primeira tentativa fosse pontuada",
+    "roundName": "Vareta {n}",
+    "detail": "Vareta {stick} / Desvio de {distance} pts",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Enviando para o ranking…",
+    "guestSkip": "Resultado não enviado ao ranking: você começou sem nome.",
+    "retireSkip": "Resultado não enviado ao ranking: você abandonou esta partida.",
+    "anonymous": "Anônimo",
+    "emptyRank": "O ranking ainda está vazio. Conclua uma partida para aparecer aqui.",
+    "rank": "#{n}",
+    "top": "Top {n}",
+    "fetchFail": "Não foi possível carregar",
+    "retryRank": "Recarregar a classificação",
+    "fetchNote": "Não foi possível carregar o ranking. Seu resultado ainda está disponível nesta tela.",
+    "submitReject": "O ranking não aceitou o envio. Você ainda pode ver seu nome e sua pontuação aqui.",
+    "newBest": "Novo recorde pessoal!",
+    "submitSuccess": "Resultado enviado ao ranking.",
+    "submitError": "Não foi possível enviar o resultado ao ranking. A tela de resultados continua disponível.",
+    "shareDesc": "Um jogo de reflexos: pegue cada vareta que cai bem na linha.",
+    "shareTitle": "Resultados de {title}",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Pontuação final",
+    "copied": "Copiado para a área de transferência",
+    "copyError": "Não foi possível copiar"
+  },
+  "zh-Hans": {
+    "language": "语言",
+    "home": "主页面",
+    "eyebrow": "八根棒 • 反应游戏",
+    "lead1": "在下落的棒正好对准横线时接住它。",
+    "lead2": "八根棒会以随机顺序和间隔下落。",
+    "lead3": "目标区域的中心越靠近横线，得分越高。",
+    "bestEmpty": "只有以有效名称开始且完成的游戏才会提交到排行榜。个人最佳成绩也会保存在本设备上。",
+    "bestWith": "个人最佳：{score} / {max}。只有以有效名称开始且完成的游戏才会提交到排行榜。",
+    "nameLabel": "排行榜名称（选填，最多 10 字符）",
+    "namePlaceholder": "留空即可匿名游玩",
+    "clearSavedName": "清除已保存名称",
+    "nameStorageError": "无法更改已保存的名称。请检查浏览器的存储设置。",
+    "start": "开始游戏",
+    "rules": "玩法说明",
+    "shareGame": "分享游戏",
+    "shareX": "在 X 上分享",
+    "shareManualCopy": "未能打开发布窗口。请复制这段文字。",
+    "other": "其他游戏",
+    "guestNote": "无需输入名称也可以玩。只有以有效名称开始且完成的游戏才会提交到排行榜。",
+    "game": "游戏画面",
+    "sticks": "根数",
+    "score": "分数",
+    "next": "下一根",
+    "retire": "退出本局",
+    "stage": "棒的下落区域",
+    "judgeInitial": "点击接棒区域以接住棒",
+    "catch": "在这里接住",
+    "catchNote": "只能接住正在下落的棒",
+    "results": "结果",
+    "clear": "已完成",
+    "totalCaption": "八根棒总分",
+    "submitWaiting": "等待提交到排行榜。",
+    "ranking": "排行榜",
+    "checking": "正在查询",
+    "loading": "正在加载排行榜…",
+    "shareResult": "分享结果",
+    "retry": "再玩一次",
+    "finish": "结束游戏",
+    "rule1": "八根棒将依次下落。",
+    "rule2": "点击下方接棒区域，接住正在下落的棒。",
+    "rule3": "棒的目标区域中心越靠近横线，得分越高。",
+    "rule4": "每根最多 100 分，八根合计最高 800 分。",
+    "close": "关闭",
+    "points": "{n} 分",
+    "number": "{n} 号",
+    "ready": "准备",
+    "done": "结束",
+    "countdown": "3 秒后开始",
+    "go": "开始！",
+    "aim": "对准目标区域的横线",
+    "round": "第 {round} 根：{stick} 号棒",
+    "judged": "{judgment}！{points}",
+    "perfect": "完美",
+    "god": "闪电反应",
+    "success": "接住了",
+    "near": "差一点",
+    "off": "偏离目标",
+    "miss": "没接住",
+    "average": "平均",
+    "clearCaption": "平均：{average} / 总分上限 800 分",
+    "retireCaption": "进度：{round}/{total} • 得分：{points}",
+    "quantity": "{n} 根",
+    "progress": "进度",
+    "progressValue": "{round}/{total} 根",
+    "currentScore": "当前分数",
+    "submission": "排行榜提交",
+    "none": "无",
+    "noRecord": "没有接棒记录",
+    "earlyQuit": "首次判定前已退出",
+    "roundName": "第 {n} 根",
+    "detail": "{stick} 号棒 / 偏差 {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "正在提交到排行榜…",
+    "guestSkip": "本局未提交到排行榜：开始时没有名称。",
+    "retireSkip": "本局未提交到排行榜：你已中途退出。",
+    "anonymous": "匿名",
+    "emptyRank": "排行榜暂无记录。完成一局后即可显示在这里。",
+    "rank": "第 {n} 名",
+    "top": "前 {n} 名",
+    "fetchFail": "加载失败",
+    "retryRank": "重试加载排行榜",
+    "fetchNote": "无法加载排行榜。仍可在本页面查看游戏结果。",
+    "submitReject": "排行榜未接受本次提交。仍可在本页面查看名称和分数。",
+    "newBest": "刷新个人纪录！",
+    "submitSuccess": "已提交到排行榜。",
+    "submitError": "提交排行榜失败。仍可继续使用结果页面。",
+    "shareDesc": "反应游戏：在下落的棒正好对准横线时接住它。",
+    "shareTitle": "{title} 游戏结果",
+    "shareLine": "{label}：{value}",
+    "finalScore": "最终得分",
+    "copied": "已复制到剪贴板",
+    "copyError": "无法复制"
+  },
+  "fr": {
+    "language": "Langue",
+    "home": "Accueil",
+    "eyebrow": "Huit bâtons • Jeu de réflexes",
+    "lead1": "Attrapez chaque bâton qui tombe pile sur la ligne.",
+    "lead2": "Les huit bâtons tombent dans un ordre et à des intervalles aléatoires.",
+    "lead3": "Plus le centre de la zone cible est proche de la ligne, plus vous marquez de points.",
+    "bestEmpty": "Seules les parties terminées et commencées avec un nom valide sont envoyées au classement. Votre record personnel est aussi enregistré sur cet appareil.",
+    "bestWith": "Record personnel : {score} / {max}. Seules les parties terminées et commencées avec un nom valide sont envoyées au classement.",
+    "nameLabel": "Nom pour le classement (facultatif, 10 caractères maximum)",
+    "namePlaceholder": "Laissez vide pour jouer sans nom",
+    "clearSavedName": "Effacer le nom enregistré",
+    "nameStorageError": "Impossible de modifier le nom enregistré. Vérifiez les paramètres de stockage du navigateur.",
+    "start": "Commencer la partie",
+    "rules": "Règles du jeu",
+    "shareGame": "Partager le jeu",
+    "shareX": "Partager sur X",
+    "shareManualCopy": "La fenêtre de publication ne s’est pas ouverte. Copiez ce texte.",
+    "other": "Autres jeux",
+    "guestNote": "Vous pouvez jouer sans nom. Seules les parties terminées et commencées avec un nom valide sont envoyées au classement.",
+    "game": "Partie",
+    "sticks": "Bâtons",
+    "score": "Score",
+    "next": "Suivant",
+    "retire": "Abandonner la partie",
+    "stage": "Zone de chute des bâtons",
+    "judgeInitial": "Touchez la zone de prise pour attraper le bâton",
+    "catch": "Attraper ici",
+    "catchNote": "Seuls les bâtons en train de tomber peuvent être attrapés",
+    "results": "Résultats",
+    "clear": "Partie terminée",
+    "totalCaption": "Total des huit bâtons",
+    "submitWaiting": "En attente d’envoi au classement.",
+    "ranking": "Classement",
+    "checking": "Vérification",
+    "loading": "Chargement du classement…",
+    "shareResult": "Partager le résultat",
+    "retry": "Rejouer",
+    "finish": "Quitter le jeu",
+    "rule1": "Huit bâtons tombent un par un.",
+    "rule2": "Touchez la zone de prise en bas pour attraper un bâton qui tombe.",
+    "rule3": "Plus le centre de la zone cible est proche de la ligne, plus vous marquez de points.",
+    "rule4": "Marquez jusqu’à 100 points par bâton, soit 800 points au total pour les huit.",
+    "close": "Fermer",
+    "points": "{n} pts",
+    "number": "N° {n}",
+    "ready": "Préparez-vous",
+    "done": "Terminé",
+    "countdown": "Départ dans 3 secondes",
+    "go": "C’est parti !",
+    "aim": "Visez la ligne dans la zone cible",
+    "round": "Bâton {round} : n° {stick}",
+    "judged": "{judgment} ! {points}",
+    "perfect": "Parfait",
+    "god": "Réflexes éclair",
+    "success": "Attrapé",
+    "near": "Presque",
+    "off": "Hors cible",
+    "miss": "Manqué",
+    "average": "Moyenne",
+    "clearCaption": "Moyenne : {average} / 800 pts max.",
+    "retireCaption": "Progression : {round}/{total} • Score : {points}",
+    "quantity": "{n}",
+    "progress": "Progression",
+    "progressValue": "{round}/{total} bâtons",
+    "currentScore": "Score actuel",
+    "submission": "Envoi au classement",
+    "none": "Aucun",
+    "noRecord": "Aucune prise enregistrée",
+    "earlyQuit": "Vous avez quitté avant que le premier essai soit noté",
+    "roundName": "Bâton {n}",
+    "detail": "Bâton {stick} / écart de {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Envoi au classement…",
+    "guestSkip": "Aucun envoi au classement : la partie a commencé sans nom.",
+    "retireSkip": "Aucun envoi au classement : vous avez abandonné la partie.",
+    "anonymous": "Anonyme",
+    "emptyRank": "Le classement est encore vide. Terminez une partie pour y figurer.",
+    "rank": "n° {n}",
+    "top": "Top {n}",
+    "fetchFail": "Échec du chargement",
+    "retryRank": "Recharger le classement",
+    "fetchNote": "Impossible de charger le classement. Votre résultat est toujours disponible sur cet écran.",
+    "submitReject": "Le classement a refusé le résultat. Vous pouvez toujours voir votre nom et votre score ici.",
+    "newBest": "Nouveau record personnel !",
+    "submitSuccess": "Résultat envoyé au classement.",
+    "submitError": "Impossible d’envoyer le résultat au classement. L’écran des résultats reste disponible.",
+    "shareDesc": "Un jeu de réflexes : attrapez chaque bâton qui tombe pile sur la ligne.",
+    "shareTitle": "Résultats de {title}",
+    "shareLine": "{label} : {value}",
+    "finalScore": "Score final",
+    "copied": "Copié dans le presse-papiers",
+    "copyError": "Échec de la copie"
+  },
+  "de": {
+    "language": "Sprache",
+    "home": "Startseite",
+    "eyebrow": "Acht Stäbe • Reaktionsspiel",
+    "lead1": "Fang jeden fallenden Stab genau an der Linie.",
+    "lead2": "Die acht Stäbe fallen in zufälliger Reihenfolge und mit zufälligen Abständen.",
+    "lead3": "Je näher die Mitte des Zielbereichs an der Linie ist, desto mehr Punkte bekommst du.",
+    "bestEmpty": "Nur abgeschlossene Runden, die mit einem gültigen Namen begonnen wurden, werden an die Rangliste gesendet. Deine Bestleistung wird auch auf diesem Gerät gespeichert.",
+    "bestWith": "Persönliche Bestleistung: {score} / {max}. Nur abgeschlossene Runden, die mit einem gültigen Namen begonnen wurden, werden an die Rangliste gesendet.",
+    "nameLabel": "Name für die Rangliste (optional, bis zu 10 Zeichen)",
+    "namePlaceholder": "Leer lassen, um ohne Namen zu spielen",
+    "clearSavedName": "Gespeicherten Namen löschen",
+    "nameStorageError": "Der gespeicherte Name konnte nicht geändert werden. Prüfe die Speichereinstellungen des Browsers.",
+    "start": "Spiel starten",
+    "rules": "Spielanleitung",
+    "shareGame": "Spiel teilen",
+    "shareX": "Auf X teilen",
+    "shareManualCopy": "Das Beitragsfenster wurde nicht geöffnet. Kopiere diesen Text.",
+    "other": "Andere Spiele",
+    "guestNote": "Du kannst ohne Namen spielen. Nur abgeschlossene Runden, die mit einem gültigen Namen begonnen wurden, werden an die Rangliste gesendet.",
+    "game": "Spiel",
+    "sticks": "Stäbe",
+    "score": "Punkte",
+    "next": "Weiter",
+    "retire": "Runde aufgeben",
+    "stage": "Fallbereich der Stäbe",
+    "judgeInitial": "Tippe auf den Fangbereich, um den Stab zu fangen",
+    "catch": "Hier fangen",
+    "catchNote": "Du kannst nur einen fallenden Stab fangen",
+    "results": "Ergebnisse",
+    "clear": "Abgeschlossen",
+    "totalCaption": "Gesamtpunktzahl für acht Stäbe",
+    "submitWaiting": "Wartet auf Übermittlung an die Rangliste.",
+    "ranking": "Rangliste",
+    "checking": "Wird geprüft",
+    "loading": "Rangliste wird geladen…",
+    "shareResult": "Ergebnis teilen",
+    "retry": "Erneut spielen",
+    "finish": "Spiel beenden",
+    "rule1": "Acht Stäbe fallen nacheinander.",
+    "rule2": "Tippe unten auf den Fangbereich, um einen fallenden Stab zu fangen.",
+    "rule3": "Je näher die Mitte des Zielbereichs an der Linie ist, desto mehr Punkte bekommst du.",
+    "rule4": "Du kannst bis zu 100 Punkte pro Stab erreichen, also insgesamt bis zu 800 für acht Stäbe.",
+    "close": "Schließen",
+    "points": "{n} Pkt.",
+    "number": "Nr. {n}",
+    "ready": "Bereit machen",
+    "done": "Fertig",
+    "countdown": "Start in 3 Sekunden",
+    "go": "Los!",
+    "aim": "Ziele auf die Linie im Zielbereich",
+    "round": "Stab {round}: Nr. {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "Perfekt",
+    "god": "Blitzreflexe",
+    "success": "Gefangen",
+    "near": "Knapp daneben",
+    "off": "Außerhalb des Ziels",
+    "miss": "Verpasst",
+    "average": "Durchschnitt",
+    "clearCaption": "Durchschnitt: {average} / max. 800 Pkt.",
+    "retireCaption": "Fortschritt: {round}/{total} • Punkte: {points}",
+    "quantity": "{n}",
+    "progress": "Fortschritt",
+    "progressValue": "{round}/{total} Stäbe",
+    "currentScore": "Aktuelle Punktzahl",
+    "submission": "Übermittlung an die Rangliste",
+    "none": "Keine",
+    "noRecord": "Keine Fangversuche erfasst",
+    "earlyQuit": "Du hast aufgehört, bevor der erste Versuch gewertet wurde",
+    "roundName": "Stab {n}",
+    "detail": "Stab {stick} / Abweichung: {distance} Pkt.",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Wird an die Rangliste gesendet…",
+    "guestSkip": "Keine Übermittlung an die Rangliste: Du hast ohne Namen begonnen.",
+    "retireSkip": "Keine Übermittlung an die Rangliste: Du hast diese Runde aufgegeben.",
+    "anonymous": "Anonym",
+    "emptyRank": "Die Rangliste ist noch leer. Schließe eine Runde ab, um hier zu erscheinen.",
+    "rank": "Platz {n}",
+    "top": "Top {n}",
+    "fetchFail": "Laden fehlgeschlagen",
+    "retryRank": "Rangliste erneut laden",
+    "fetchNote": "Die Rangliste konnte nicht geladen werden. Dein Ergebnis bleibt auf diesem Bildschirm verfügbar.",
+    "submitReject": "Die Rangliste hat das Ergebnis nicht angenommen. Du siehst deinen Namen und deine Punkte weiterhin hier.",
+    "newBest": "Neue persönliche Bestleistung!",
+    "submitSuccess": "Ergebnis an die Rangliste gesendet.",
+    "submitError": "Das Ergebnis konnte nicht an die Rangliste gesendet werden. Der Ergebnisbildschirm bleibt verfügbar.",
+    "shareDesc": "Ein Reaktionsspiel: Fang jeden fallenden Stab genau an der Linie.",
+    "shareTitle": "{title}: Ergebnisse",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Endpunktzahl",
+    "copied": "In die Zwischenablage kopiert",
+    "copyError": "Kopieren fehlgeschlagen"
+  },
+  "ko": {
+    "language": "언어",
+    "home": "홈",
+    "eyebrow": "막대 8개 • 순발력 게임",
+    "lead1": "떨어지는 막대를 선에 딱 맞춰 잡으세요.",
+    "lead2": "막대 8개가 무작위 순서와 간격으로 떨어집니다.",
+    "lead3": "목표 구역의 중심이 선에 가까울수록 더 많은 점수를 얻습니다.",
+    "bestEmpty": "유효한 이름으로 시작해 끝까지 마친 플레이만 랭킹에 전송됩니다. 개인 최고 기록은 이 기기에도 저장됩니다.",
+    "bestWith": "개인 최고 기록: {score} / {max}. 유효한 이름으로 시작해 끝까지 마친 플레이만 랭킹에 전송됩니다.",
+    "nameLabel": "랭킹용 이름 (선택 사항, 최대 10자)",
+    "namePlaceholder": "이름 없이 플레이하려면 비워 두세요",
+    "clearSavedName": "저장된 이름 지우기",
+    "nameStorageError": "저장된 이름을 변경할 수 없습니다. 브라우저의 저장 설정을 확인하세요.",
+    "start": "게임 시작",
+    "rules": "플레이 방법",
+    "shareGame": "게임 공유",
+    "shareX": "X에서 공유",
+    "shareManualCopy": "게시 창이 열리지 않았습니다. 이 문구를 복사하세요.",
+    "other": "다른 게임",
+    "guestNote": "이름 없이도 플레이할 수 있습니다. 유효한 이름으로 시작해 끝까지 마친 플레이만 랭킹에 전송됩니다.",
+    "game": "게임",
+    "sticks": "막대",
+    "score": "점수",
+    "next": "다음",
+    "retire": "이번 플레이 포기",
+    "stage": "막대가 떨어지는 구역",
+    "judgeInitial": "잡기 구역을 눌러 막대를 잡으세요",
+    "catch": "여기를 눌러 잡기",
+    "catchNote": "떨어지는 중인 막대만 잡을 수 있습니다",
+    "results": "결과",
+    "clear": "완료",
+    "totalCaption": "막대 8개의 합계",
+    "submitWaiting": "랭킹 전송 대기 중입니다.",
+    "ranking": "랭킹",
+    "checking": "확인 중",
+    "loading": "랭킹 불러오는 중…",
+    "shareResult": "결과 공유",
+    "retry": "다시 플레이",
+    "finish": "게임 나가기",
+    "rule1": "막대 8개가 하나씩 떨어집니다.",
+    "rule2": "아래쪽 잡기 구역을 눌러 떨어지는 막대를 잡으세요.",
+    "rule3": "목표 구역의 중심이 선에 가까울수록 더 많은 점수를 얻습니다.",
+    "rule4": "막대 하나당 최대 100점, 8개를 모두 합쳐 최대 800점을 얻을 수 있습니다.",
+    "close": "닫기",
+    "points": "{n}점",
+    "number": "{n}번",
+    "ready": "준비",
+    "done": "끝",
+    "countdown": "3초 뒤에 시작합니다",
+    "go": "시작!",
+    "aim": "목표 구역 안의 선을 겨냥하세요",
+    "round": "{round}번째: {stick}번 막대",
+    "judged": "{judgment}! {points}",
+    "perfect": "완벽",
+    "god": "번개 같은 순발력",
+    "success": "잡았어요",
+    "near": "아깝다",
+    "off": "목표를 벗어났어요",
+    "miss": "놓쳤어요",
+    "average": "평균",
+    "clearCaption": "평균 {average} / 800점 만점",
+    "retireCaption": "진행: {round}/{total} • 점수: {points}",
+    "quantity": "{n}",
+    "progress": "진행",
+    "progressValue": "막대 {round}/{total}개",
+    "currentScore": "현재 점수",
+    "submission": "랭킹 전송",
+    "none": "없음",
+    "noRecord": "기록된 결과가 없습니다",
+    "earlyQuit": "첫 번째 시도의 점수가 매겨지기 전에 나갔습니다",
+    "roundName": "{n}번째 막대",
+    "detail": "{stick}번 막대 / 오차 {distance}pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "랭킹에 전송 중…",
+    "guestSkip": "이름 없이 시작했으므로 결과를 랭킹에 전송하지 않습니다.",
+    "retireSkip": "이번 플레이를 포기했으므로 결과를 랭킹에 전송하지 않습니다.",
+    "anonymous": "익명",
+    "emptyRank": "아직 랭킹 기록이 없습니다. 끝까지 플레이하면 여기에 표시됩니다.",
+    "rank": "{n}위",
+    "top": "상위 {n}명",
+    "fetchFail": "불러오지 못했습니다",
+    "retryRank": "순위표 다시 불러오기",
+    "fetchNote": "랭킹을 불러오지 못했습니다. 이번 결과는 이 화면에서 계속 확인할 수 있습니다.",
+    "submitReject": "랭킹에서 기록을 받아들이지 않았습니다. 이름과 점수는 여기에서 계속 확인할 수 있습니다.",
+    "newBest": "개인 최고 기록 갱신!",
+    "submitSuccess": "랭킹에 전송했습니다.",
+    "submitError": "랭킹에 전송하지 못했습니다. 결과 화면은 계속 사용할 수 있습니다.",
+    "shareDesc": "떨어지는 막대를 선에 딱 맞춰 잡는 순발력 게임입니다.",
+    "shareTitle": "{title} 결과",
+    "shareLine": "{label}: {value}",
+    "finalScore": "최종 점수",
+    "copied": "클립보드에 복사했습니다",
+    "copyError": "복사하지 못했습니다"
+  },
+  "ru": {
+    "language": "Язык",
+    "home": "Главный экран",
+    "eyebrow": "Восемь палочек • Игра на реакцию",
+    "lead1": "Ловите падающие палочки точно у линии.",
+    "lead2": "Восемь палочек падают в случайном порядке и с разными интервалами.",
+    "lead3": "Чем ближе центр целевой зоны к линии, тем больше очков.",
+    "bestEmpty": "В рейтинг отправляются только завершённые игры, начатые с допустимым именем. Личный рекорд сохраняется и на этом устройстве.",
+    "bestWith": "Личный рекорд: {score} / {max}. В рейтинг отправляются только завершённые игры, начатые с допустимым именем.",
+    "nameLabel": "Имя для рейтинга (необязательно, до 10 символов)",
+    "namePlaceholder": "Оставьте поле пустым, чтобы играть гостем",
+    "clearSavedName": "Удалить сохранённое имя",
+    "nameStorageError": "Не удалось изменить сохранённое имя. Проверьте настройки хранилища браузера.",
+    "start": "Начать игру",
+    "rules": "Как играть",
+    "shareGame": "Поделиться игрой",
+    "shareX": "Поделиться в X",
+    "shareManualCopy": "Окно публикации не открылось. Скопируйте этот текст.",
+    "other": "Другие игры",
+    "guestNote": "Можно играть без имени. В рейтинг отправляются только завершённые игры, начатые с допустимым именем.",
+    "game": "Игра",
+    "sticks": "Палочки",
+    "score": "Счёт",
+    "next": "Далее",
+    "retire": "Прервать игру",
+    "stage": "Зона падения палочек",
+    "judgeInitial": "Нажмите на область захвата, чтобы поймать палочку",
+    "catch": "Ловить здесь",
+    "catchNote": "Поймать можно только падающую палочку",
+    "results": "Результаты",
+    "clear": "Завершено",
+    "totalCaption": "Сумма за восемь палочек",
+    "submitWaiting": "Ожидание отправки в рейтинг.",
+    "ranking": "Рейтинг",
+    "checking": "Проверка",
+    "loading": "Загрузка рейтинга…",
+    "shareResult": "Поделиться результатом",
+    "retry": "Играть ещё",
+    "finish": "Выйти из игры",
+    "rule1": "Восемь палочек падают по одной.",
+    "rule2": "Коснитесь нижней области захвата, чтобы поймать падающую палочку.",
+    "rule3": "Чем ближе центр целевой зоны палочки к линии, тем больше очков.",
+    "rule4": "До 100 очков за палочку, до 800 за все восемь.",
+    "close": "Закрыть",
+    "points": "{n} очк.",
+    "number": "№ {n}",
+    "ready": "Приготовьтесь",
+    "done": "Готово",
+    "countdown": "Начало через 3 секунды",
+    "go": "Старт!",
+    "aim": "Цельтесь в линию в целевой зоне",
+    "round": "Палочка {round}: № {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "Идеально",
+    "god": "Молниеносная реакция",
+    "success": "Поймано",
+    "near": "Почти",
+    "off": "Мимо цели",
+    "miss": "Не поймано",
+    "average": "Среднее",
+    "clearCaption": "Среднее: {average} / максимум 800 очк.",
+    "retireCaption": "Прогресс: {round}/{total} • Счёт: {points}",
+    "quantity": "{n} шт.",
+    "progress": "Прогресс",
+    "progressValue": "{round}/{total} палочек",
+    "currentScore": "Текущий счёт",
+    "submission": "Отправка в рейтинг",
+    "none": "Нет",
+    "noRecord": "Попыток не записано",
+    "earlyQuit": "Вы вышли до оценки первой попытки",
+    "roundName": "Палочка {n}",
+    "detail": "Палочка {stick} / Отклонение {distance} пт",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Отправка в рейтинг…",
+    "guestSkip": "Результат не отправлен: вы начали без имени.",
+    "retireSkip": "Результат не отправлен: вы прервали игру.",
+    "anonymous": "Аноним",
+    "emptyRank": "В рейтинге пока нет записей. Завершите игру, чтобы попасть в него.",
+    "rank": "№ {n}",
+    "top": "Топ-{n}",
+    "fetchFail": "Не удалось загрузить",
+    "retryRank": "Загрузить таблицу лидеров снова",
+    "fetchNote": "Не удалось загрузить рейтинг. Результат игры по-прежнему доступен на этом экране.",
+    "submitReject": "Рейтинг не принял результат. Имя и счёт остаются на экране.",
+    "newBest": "Новый личный рекорд!",
+    "submitSuccess": "Результат отправлен в рейтинг.",
+    "submitError": "Не удалось отправить результат. Экран результатов по-прежнему доступен.",
+    "shareDesc": "Игра на реакцию: ловите падающие палочки точно у линии.",
+    "shareTitle": "Результаты игры «{title}»",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Итоговый счёт",
+    "copied": "Скопировано в буфер обмена",
+    "copyError": "Не удалось скопировать"
+  },
+  "it": {
+    "language": "Lingua",
+    "home": "Pagina iniziale",
+    "eyebrow": "Otto bastoncini • Gioco di riflessi",
+    "lead1": "Afferra ogni bastoncino in caduta esattamente sulla linea.",
+    "lead2": "Gli otto bastoncini cadono in ordine e a intervalli casuali.",
+    "lead3": "Più il centro della zona bersaglio è vicino alla linea, più punti ottieni.",
+    "bestEmpty": "Vengono inviate alla classifica solo le partite completate e iniziate con un nome valido. Il tuo record personale viene salvato anche su questo dispositivo.",
+    "bestWith": "Record personale: {score} / {max}. Vengono inviate alla classifica solo le partite completate e iniziate con un nome valido.",
+    "nameLabel": "Nome per la classifica (facoltativo, fino a 10 caratteri)",
+    "namePlaceholder": "Lascia vuoto per giocare senza nome",
+    "clearSavedName": "Cancella nome salvato",
+    "nameStorageError": "Non è stato possibile modificare il nome salvato. Controlla le impostazioni di archiviazione del browser.",
+    "start": "Inizia la partita",
+    "rules": "Come giocare",
+    "shareGame": "Condividi il gioco",
+    "shareX": "Condividi su X",
+    "shareManualCopy": "La finestra di pubblicazione non si è aperta. Copia questo testo.",
+    "other": "Altri giochi",
+    "guestNote": "Puoi giocare senza nome. Vengono inviate alla classifica solo le partite completate e iniziate con un nome valido.",
+    "game": "Partita",
+    "sticks": "Bastoncini",
+    "score": "Punteggio",
+    "next": "Avanti",
+    "retire": "Abbandona la partita",
+    "stage": "Area di caduta dei bastoncini",
+    "judgeInitial": "Tocca l’area di presa per afferrare il bastoncino",
+    "catch": "Afferra qui",
+    "catchNote": "Puoi afferrare un bastoncino solo mentre cade",
+    "results": "Risultati",
+    "clear": "Partita completata",
+    "totalCaption": "Totale degli otto bastoncini",
+    "submitWaiting": "In attesa di invio alla classifica.",
+    "ranking": "Classifica",
+    "checking": "Verifica in corso",
+    "loading": "Caricamento della classifica…",
+    "shareResult": "Condividi il risultato",
+    "retry": "Gioca ancora",
+    "finish": "Esci dal gioco",
+    "rule1": "Gli otto bastoncini cadono uno alla volta.",
+    "rule2": "Tocca l’area di presa in basso per afferrare un bastoncino in caduta.",
+    "rule3": "Più il centro della zona bersaglio è vicino alla linea, più punti ottieni.",
+    "rule4": "Ottieni fino a 100 punti per bastoncino, per un massimo di 800 punti con otto bastoncini.",
+    "close": "Chiudi",
+    "points": "{n} pt",
+    "number": "N. {n}",
+    "ready": "Preparati",
+    "done": "Fatto",
+    "countdown": "Si parte tra 3 secondi",
+    "go": "Via!",
+    "aim": "Mira alla linea nella zona bersaglio",
+    "round": "Bastoncino {round}: n. {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "Perfetto",
+    "god": "Riflessi fulminei",
+    "success": "Preso",
+    "near": "Quasi",
+    "off": "Fuori bersaglio",
+    "miss": "Mancato",
+    "average": "Media",
+    "clearCaption": "Media: {average} / max 800 pt",
+    "retireCaption": "Avanzamento: {round}/{total} • Punteggio: {points}",
+    "quantity": "{n}",
+    "progress": "Avanzamento",
+    "progressValue": "{round}/{total} bastoncini",
+    "currentScore": "Punteggio attuale",
+    "submission": "Invio alla classifica",
+    "none": "Nessuno",
+    "noRecord": "Nessuna presa registrata",
+    "earlyQuit": "Hai abbandonato prima che venisse valutato il primo tentativo",
+    "roundName": "Bastoncino {n}",
+    "detail": "Bastoncino {stick} / Scarto di {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Invio alla classifica…",
+    "guestSkip": "Nessun invio alla classifica: hai iniziato senza nome.",
+    "retireSkip": "Nessun invio alla classifica: hai abbandonato la partita.",
+    "anonymous": "Anonimo",
+    "emptyRank": "La classifica è ancora vuota. Completa una partita per comparire qui.",
+    "rank": "Pos. {n}",
+    "top": "Primi {n}",
+    "fetchFail": "Caricamento non riuscito",
+    "retryRank": "Ricarica la classifica",
+    "fetchNote": "Impossibile caricare la classifica. Il tuo risultato è ancora disponibile in questa schermata.",
+    "submitReject": "La classifica ha rifiutato il risultato. Puoi comunque vedere qui il tuo nome e il tuo punteggio.",
+    "newBest": "Nuovo record personale!",
+    "submitSuccess": "Risultato inviato alla classifica.",
+    "submitError": "Impossibile inviare il risultato alla classifica. La schermata dei risultati resta disponibile.",
+    "shareDesc": "Un gioco di riflessi: afferra ogni bastoncino in caduta proprio sulla linea.",
+    "shareTitle": "Risultati di {title}",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Punteggio finale",
+    "copied": "Copiato negli appunti",
+    "copyError": "Copia non riuscita"
+  },
+  "zh-Hant": {
+    "language": "語言",
+    "home": "主畫面",
+    "eyebrow": "八根棒 • 反應遊戲",
+    "lead1": "在落下的棒正好對準橫線時接住它。",
+    "lead2": "八根棒會以隨機順序和間隔落下。",
+    "lead3": "目標區域的中心越靠近橫線，得分越高。",
+    "bestEmpty": "只有以有效名稱開始且完成的遊戲才會送出至排行榜。個人最佳成績也會儲存在本裝置上。",
+    "bestWith": "個人最佳：{score} / {max}。只有以有效名稱開始且完成的遊戲才會送出至排行榜。",
+    "nameLabel": "排行榜名稱（選填，最多 10 字元）",
+    "namePlaceholder": "留空即可匿名遊玩",
+    "clearSavedName": "清除已儲存名稱",
+    "nameStorageError": "無法變更已儲存的名稱。請檢查瀏覽器的儲存設定。",
+    "start": "開始遊戲",
+    "rules": "玩法說明",
+    "shareGame": "分享遊戲",
+    "shareX": "在 X 上分享",
+    "shareManualCopy": "未能開啟發文視窗。請複製這段文字。",
+    "other": "其他遊戲",
+    "guestNote": "不輸入名稱也能玩。只有以有效名稱開始且完成的遊戲才會送出至排行榜。",
+    "game": "遊戲畫面",
+    "sticks": "根數",
+    "score": "分數",
+    "next": "下一根",
+    "retire": "退出本局",
+    "stage": "棒的落下區域",
+    "judgeInitial": "點擊接棒區域以接住棒",
+    "catch": "在這裡接住",
+    "catchNote": "只能接住正在落下的棒",
+    "results": "結果",
+    "clear": "已完成",
+    "totalCaption": "八根棒總分",
+    "submitWaiting": "等待送出至排行榜。",
+    "ranking": "排行榜",
+    "checking": "正在查詢",
+    "loading": "正在載入排行榜…",
+    "shareResult": "分享結果",
+    "retry": "再玩一次",
+    "finish": "結束遊戲",
+    "rule1": "八根棒將依序落下。",
+    "rule2": "點擊下方接棒區域，接住正在落下的棒。",
+    "rule3": "棒的目標區域中心越靠近橫線，得分越高。",
+    "rule4": "每根最多 100 分，八根合計最高 800 分。",
+    "close": "關閉",
+    "points": "{n} 分",
+    "number": "{n} 號",
+    "ready": "準備",
+    "done": "結束",
+    "countdown": "3 秒後開始",
+    "go": "開始！",
+    "aim": "對準目標區域的橫線",
+    "round": "第 {round} 根：{stick} 號棒",
+    "judged": "{judgment}！{points}",
+    "perfect": "完美",
+    "god": "閃電反應",
+    "success": "接住了",
+    "near": "差一點",
+    "off": "偏離目標",
+    "miss": "沒接住",
+    "average": "平均",
+    "clearCaption": "平均：{average} / 總分上限 800 分",
+    "retireCaption": "進度：{round}/{total} • 得分：{points}",
+    "quantity": "{n} 根",
+    "progress": "進度",
+    "progressValue": "{round}/{total} 根",
+    "currentScore": "目前分數",
+    "submission": "排行榜送出",
+    "none": "無",
+    "noRecord": "沒有接棒紀錄",
+    "earlyQuit": "首次判定前已退出",
+    "roundName": "第 {n} 根",
+    "detail": "{stick} 號棒 / 偏差 {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "正在送出至排行榜…",
+    "guestSkip": "本局未送出至排行榜：開始時沒有名稱。",
+    "retireSkip": "本局未送出至排行榜：你已中途退出。",
+    "anonymous": "匿名",
+    "emptyRank": "排行榜目前沒有紀錄。完成一局後即可顯示在這裡。",
+    "rank": "第 {n} 名",
+    "top": "前 {n} 名",
+    "fetchFail": "載入失敗",
+    "retryRank": "重試載入排行榜",
+    "fetchNote": "無法載入排行榜。仍可在本畫面查看遊戲結果。",
+    "submitReject": "排行榜未接受這次送出。仍可在本畫面查看名稱和分數。",
+    "newBest": "刷新個人紀錄！",
+    "submitSuccess": "已送出至排行榜。",
+    "submitError": "送出至排行榜失敗。仍可繼續使用結果畫面。",
+    "shareDesc": "反應遊戲：在落下的棒正好對準橫線時接住它。",
+    "shareTitle": "{title} 遊戲結果",
+    "shareLine": "{label}：{value}",
+    "finalScore": "最終得分",
+    "copied": "已複製到剪貼簿",
+    "copyError": "無法複製"
+  },
+  "id": {
+    "language": "Bahasa",
+    "home": "Beranda",
+    "eyebrow": "Delapan batang • Gim reaksi",
+    "lead1": "Tangkap setiap batang yang jatuh tepat di garis.",
+    "lead2": "Delapan batang jatuh dalam urutan dan jeda acak.",
+    "lead3": "Semakin dekat pusat zona sasaran ke garis, semakin tinggi poin Anda.",
+    "bestEmpty": "Hanya permainan tuntas yang dimulai dengan nama valid yang dikirim ke papan peringkat. Rekor pribadi juga disimpan di perangkat ini.",
+    "bestWith": "Rekor pribadi: {score} / {max}. Hanya permainan tuntas yang dimulai dengan nama valid yang dikirim ke papan peringkat.",
+    "nameLabel": "Nama papan peringkat (opsional, maks. 10 karakter)",
+    "namePlaceholder": "Biarkan kosong untuk bermain sebagai tamu",
+    "clearSavedName": "Hapus nama tersimpan",
+    "nameStorageError": "Nama tersimpan tidak dapat diubah. Periksa pengaturan penyimpanan peramban.",
+    "start": "Mulai gim",
+    "rules": "Cara bermain",
+    "shareGame": "Bagikan gim",
+    "shareX": "Bagikan di X",
+    "shareManualCopy": "Jendela posting tidak terbuka. Salin teks ini.",
+    "other": "Gim lainnya",
+    "guestNote": "Anda bisa bermain tanpa nama. Hanya permainan tuntas yang dimulai dengan nama valid yang dikirim ke papan peringkat.",
+    "game": "Gim",
+    "sticks": "Batang",
+    "score": "Skor",
+    "next": "Berikutnya",
+    "retire": "Hentikan permainan",
+    "stage": "Area jatuh batang",
+    "judgeInitial": "Ketuk area tangkap untuk menangkap batang",
+    "catch": "Tangkap di sini",
+    "catchNote": "Hanya batang yang sedang jatuh yang dapat ditangkap",
+    "results": "Hasil",
+    "clear": "Tuntas",
+    "totalCaption": "Total delapan batang",
+    "submitWaiting": "Menunggu pengiriman ke papan peringkat.",
+    "ranking": "Papan peringkat",
+    "checking": "Memeriksa",
+    "loading": "Memuat papan peringkat…",
+    "shareResult": "Bagikan hasil",
+    "retry": "Main lagi",
+    "finish": "Keluar dari gim",
+    "rule1": "Delapan batang jatuh satu per satu.",
+    "rule2": "Ketuk area tangkap di bawah untuk menangkap batang yang jatuh.",
+    "rule3": "Semakin dekat pusat zona sasaran ke garis, semakin tinggi poin Anda.",
+    "rule4": "Raih hingga 100 poin per batang, atau total 800 poin untuk delapan batang.",
+    "close": "Tutup",
+    "points": "{n} poin",
+    "number": "No. {n}",
+    "ready": "Bersiap",
+    "done": "Selesai",
+    "countdown": "Mulai dalam 3 detik",
+    "go": "Mulai!",
+    "aim": "Bidik garis di zona sasaran",
+    "round": "Batang ke-{round}: No. {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "Sempurna",
+    "god": "Refleks kilat",
+    "success": "Tertangkap",
+    "near": "Hampir",
+    "off": "Melenceng",
+    "miss": "Gagal",
+    "average": "Rata-rata",
+    "clearCaption": "Rata-rata: {average} / maks. 800 poin",
+    "retireCaption": "Progres: {round}/{total} • Skor: {points}",
+    "quantity": "{n} batang",
+    "progress": "Progres",
+    "progressValue": "{round}/{total} batang",
+    "currentScore": "Skor saat ini",
+    "submission": "Pengiriman ke papan peringkat",
+    "none": "Tidak ada",
+    "noRecord": "Belum ada tangkapan tercatat",
+    "earlyQuit": "Anda berhenti sebelum percobaan pertama dinilai",
+    "roundName": "Batang ke-{n}",
+    "detail": "Batang {stick} / Selisih {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Mengirim ke papan peringkat…",
+    "guestSkip": "Tidak dikirim ke papan peringkat: permainan dimulai tanpa nama.",
+    "retireSkip": "Tidak dikirim ke papan peringkat: Anda menghentikan permainan.",
+    "anonymous": "Anonim",
+    "emptyRank": "Belum ada entri di papan peringkat. Tuntaskan permainan untuk tampil di sini.",
+    "rank": "Peringkat {n}",
+    "top": "{n} teratas",
+    "fetchFail": "Gagal memuat",
+    "retryRank": "Muat ulang papan peringkat",
+    "fetchNote": "Papan peringkat tidak dapat dimuat. Hasil tetap dapat dilihat di layar ini.",
+    "submitReject": "Papan peringkat tidak menerima kiriman. Nama dan skor tetap dapat dilihat di sini.",
+    "newBest": "Rekor pribadi baru!",
+    "submitSuccess": "Terkirim ke papan peringkat.",
+    "submitError": "Gagal mengirim ke papan peringkat. Layar hasil masih dapat digunakan.",
+    "shareDesc": "Gim reaksi: tangkap batang yang jatuh tepat di garis.",
+    "shareTitle": "Hasil {title}",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Skor akhir",
+    "copied": "Disalin ke papan klip",
+    "copyError": "Gagal menyalin"
+  },
+  "tr": {
+    "language": "Dil",
+    "home": "Ana ekran",
+    "eyebrow": "Sekiz çubuk • Refleks oyunu",
+    "lead1": "Düşen her çubuğu tam çizgide yakala.",
+    "lead2": "Sekiz çubuk rastgele sırayla ve farklı aralıklarla düşer.",
+    "lead3": "Hedef bölgenin merkezi çizgiye ne kadar yakınsa o kadar çok puan kazanırsın.",
+    "bestEmpty": "Yalnızca geçerli bir adla başlayıp tamamladığın oyunlar sıralamaya gönderilir. En iyi sonucun bu cihaza da kaydedilir.",
+    "bestWith": "En iyi sonucun: {score} / {max}. Yalnızca geçerli bir adla başlayıp tamamladığın oyunlar sıralamaya gönderilir.",
+    "nameLabel": "Sıralama adı (isteğe bağlı, en fazla 10 karakter)",
+    "namePlaceholder": "Misafir olarak oynamak için boş bırak",
+    "clearSavedName": "Kayıtlı adı sil",
+    "nameStorageError": "Kayıtlı ad değiştirilemedi. Tarayıcının depolama ayarlarını kontrol et.",
+    "start": "Oyuna başla",
+    "rules": "Nasıl oynanır?",
+    "shareGame": "Oyunu paylaş",
+    "shareX": "X’te paylaş",
+    "shareManualCopy": "Gönderi penceresi açılmadı. Bu metni kopyalayın.",
+    "other": "Diğer oyunlar",
+    "guestNote": "Ad yazmadan oynayabilirsin. Yalnızca geçerli bir adla başlayıp tamamladığın oyunlar sıralamaya gönderilir.",
+    "game": "Oyun",
+    "sticks": "Çubuklar",
+    "score": "Puan",
+    "next": "Sıradaki",
+    "retire": "Oyunu bırak",
+    "stage": "Çubukların düşme alanı",
+    "judgeInitial": "Çubuğu yakalamak için yakalama alanına dokun",
+    "catch": "Buradan yakala",
+    "catchNote": "Yalnızca düşmekte olan çubuk yakalanabilir",
+    "results": "Sonuçlar",
+    "clear": "Tamamlandı",
+    "totalCaption": "Sekiz çubuğun toplamı",
+    "submitWaiting": "Sıralamaya gönderilmesi bekleniyor.",
+    "ranking": "Sıralama",
+    "checking": "Kontrol ediliyor",
+    "loading": "Sıralama yükleniyor…",
+    "shareResult": "Sonucu paylaş",
+    "retry": "Tekrar oyna",
+    "finish": "Oyundan çık",
+    "rule1": "Sekiz çubuk birer birer düşer.",
+    "rule2": "Düşen çubuğu yakalamak için alttaki yakalama alanına dokun.",
+    "rule3": "Hedef bölgenin merkezi çizgiye ne kadar yakınsa o kadar çok puan kazanırsın.",
+    "rule4": "Her çubuktan en fazla 100, sekiz çubuktan toplam 800 puan kazanabilirsin.",
+    "close": "Kapat",
+    "points": "{n} puan",
+    "number": "No. {n}",
+    "ready": "Hazırlan",
+    "done": "Bitti",
+    "countdown": "3 saniye sonra başlıyor",
+    "go": "Başla!",
+    "aim": "Hedef bölgedeki çizgiye nişan al",
+    "round": "{round}. çubuk: No. {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "Kusursuz",
+    "god": "Şimşek gibi refleks",
+    "success": "Yakalandı",
+    "near": "Çok yakın",
+    "off": "Hedef dışı",
+    "miss": "Kaçtı",
+    "average": "Ortalama",
+    "clearCaption": "Ortalama: {average} / en çok 800 puan",
+    "retireCaption": "İlerleme: {round}/{total} • Puan: {points}",
+    "quantity": "{n} adet",
+    "progress": "İlerleme",
+    "progressValue": "{round}/{total} çubuk",
+    "currentScore": "Mevcut puan",
+    "submission": "Sıralamaya gönderim",
+    "none": "Yok",
+    "noRecord": "Kayıtlı yakalama yok",
+    "earlyQuit": "İlk deneme puanlanmadan oyunu bıraktın",
+    "roundName": "{n}. çubuk",
+    "detail": "Çubuk {stick} / Sapma: {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Sıralamaya gönderiliyor…",
+    "guestSkip": "Sıralamaya gönderilmedi: Ad yazmadan başladın.",
+    "retireSkip": "Sıralamaya gönderilmedi: Oyunu yarıda bıraktın.",
+    "anonymous": "Anonim",
+    "emptyRank": "Henüz sıralama kaydı yok. Burada görünmek için bir oyunu tamamla.",
+    "rank": "{n}. sıra",
+    "top": "İlk {n}",
+    "fetchFail": "Yüklenemedi",
+    "retryRank": "Sıralamayı yeniden yükle",
+    "fetchNote": "Sıralama yüklenemedi. Sonucun bu ekranda görülebilir.",
+    "submitReject": "Sıralama gönderiyi kabul etmedi. Adını ve puanını bu ekranda görebilirsin.",
+    "newBest": "Yeni kişisel rekor!",
+    "submitSuccess": "Sıralamaya gönderildi.",
+    "submitError": "Sıralamaya gönderilemedi. Sonuç ekranını kullanmaya devam edebilirsin.",
+    "shareDesc": "Refleks oyunu: Düşen her çubuğu tam çizgide yakala.",
+    "shareTitle": "{title} sonuçları",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Son puan",
+    "copied": "Panoya kopyalandı",
+    "copyError": "Kopyalanamadı"
+  },
+  "vi": {
+    "language": "Ngôn ngữ",
+    "home": "Trang chủ",
+    "eyebrow": "Tám que • Trò chơi phản xạ",
+    "lead1": "Bắt từng que đang rơi đúng tại vạch.",
+    "lead2": "Tám que rơi theo thứ tự và khoảng thời gian ngẫu nhiên.",
+    "lead3": "Tâm vùng mục tiêu càng gần vạch thì điểm càng cao.",
+    "bestEmpty": "Chỉ lượt chơi hoàn thành đã bắt đầu với tên hợp lệ mới được gửi lên bảng xếp hạng. Kỷ lục cá nhân cũng được lưu trên thiết bị này.",
+    "bestWith": "Kỷ lục cá nhân: {score} / {max}. Chỉ lượt chơi hoàn thành đã bắt đầu với tên hợp lệ mới được gửi lên bảng xếp hạng.",
+    "nameLabel": "Tên trên bảng xếp hạng (không bắt buộc, tối đa 10 ký tự)",
+    "namePlaceholder": "Để trống để chơi với tư cách khách",
+    "clearSavedName": "Xóa tên đã lưu",
+    "nameStorageError": "Không thể thay đổi tên đã lưu. Hãy kiểm tra cài đặt lưu trữ của trình duyệt.",
+    "start": "Bắt đầu chơi",
+    "rules": "Cách chơi",
+    "shareGame": "Chia sẻ trò chơi",
+    "shareX": "Chia sẻ trên X",
+    "shareManualCopy": "Không mở được cửa sổ đăng bài. Hãy sao chép nội dung này.",
+    "other": "Trò chơi khác",
+    "guestNote": "Bạn có thể chơi không cần tên. Chỉ lượt chơi hoàn thành đã bắt đầu với tên hợp lệ mới được gửi lên bảng xếp hạng.",
+    "game": "Trò chơi",
+    "sticks": "Số que",
+    "score": "Điểm",
+    "next": "Tiếp theo",
+    "retire": "Bỏ lượt",
+    "stage": "Khu vực que rơi",
+    "judgeInitial": "Chạm vào vùng bắt để bắt que",
+    "catch": "Chạm để bắt",
+    "catchNote": "Chỉ bắt được que đang rơi",
+    "results": "Kết quả",
+    "clear": "Hoàn thành",
+    "totalCaption": "Tổng của tám que",
+    "submitWaiting": "Đang chờ gửi lên bảng xếp hạng.",
+    "ranking": "Bảng xếp hạng",
+    "checking": "Đang kiểm tra",
+    "loading": "Đang tải bảng xếp hạng…",
+    "shareResult": "Chia sẻ kết quả",
+    "retry": "Chơi lại",
+    "finish": "Thoát trò chơi",
+    "rule1": "Tám que rơi lần lượt.",
+    "rule2": "Chạm vào vùng bắt ở dưới để bắt que đang rơi.",
+    "rule3": "Tâm vùng mục tiêu của que càng gần vạch thì điểm càng cao.",
+    "rule4": "Tối đa 100 điểm mỗi que, tổng cộng 800 điểm cho tám que.",
+    "close": "Đóng",
+    "points": "{n} điểm",
+    "number": "Số {n}",
+    "ready": "Chuẩn bị",
+    "done": "Xong",
+    "countdown": "Bắt đầu sau 3 giây",
+    "go": "Bắt đầu!",
+    "aim": "Nhắm vào vạch ở vùng mục tiêu",
+    "round": "Que thứ {round}: số {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "Hoàn hảo",
+    "god": "Phản xạ chớp nhoáng",
+    "success": "Đã bắt",
+    "near": "Suýt nữa",
+    "off": "Lệch mục tiêu",
+    "miss": "Bỏ lỡ",
+    "average": "Trung bình",
+    "clearCaption": "Trung bình: {average} / tối đa 800 điểm",
+    "retireCaption": "Tiến độ: {round}/{total} • Điểm: {points}",
+    "quantity": "{n} que",
+    "progress": "Tiến độ",
+    "progressValue": "{round}/{total} que",
+    "currentScore": "Điểm hiện tại",
+    "submission": "Gửi lên bảng xếp hạng",
+    "none": "Không",
+    "noRecord": "Chưa ghi nhận lần bắt nào",
+    "earlyQuit": "Bạn bỏ lượt trước khi lần thử đầu tiên được tính điểm",
+    "roundName": "Que thứ {n}",
+    "detail": "Que số {stick} / Lệch {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "Đang gửi lên bảng xếp hạng…",
+    "guestSkip": "Không gửi lên bảng xếp hạng: bạn bắt đầu mà không nhập tên.",
+    "retireSkip": "Không gửi lên bảng xếp hạng: bạn đã bỏ lượt.",
+    "anonymous": "Ẩn danh",
+    "emptyRank": "Chưa có mục nào trên bảng xếp hạng. Hãy hoàn thành một lượt chơi để xuất hiện tại đây.",
+    "rank": "Hạng {n}",
+    "top": "Top {n}",
+    "fetchFail": "Không tải được",
+    "retryRank": "Tải lại bảng xếp hạng",
+    "fetchNote": "Không thể tải bảng xếp hạng. Bạn vẫn xem được kết quả trên màn hình này.",
+    "submitReject": "Bảng xếp hạng không chấp nhận kết quả. Bạn vẫn có thể xem tên và điểm ở đây.",
+    "newBest": "Kỷ lục cá nhân mới!",
+    "submitSuccess": "Đã gửi lên bảng xếp hạng.",
+    "submitError": "Không thể gửi lên bảng xếp hạng. Màn hình kết quả vẫn dùng được.",
+    "shareDesc": "Trò chơi phản xạ: bắt từng que đang rơi đúng tại vạch.",
+    "shareTitle": "Kết quả {title}",
+    "shareLine": "{label}: {value}",
+    "finalScore": "Điểm cuối cùng",
+    "copied": "Đã sao chép vào bộ nhớ tạm",
+    "copyError": "Không sao chép được"
+  },
+  "th": {
+    "language": "ภาษา",
+    "home": "หน้าหลัก",
+    "eyebrow": "ไม้ 8 แท่ง • เกมทดสอบปฏิกิริยา",
+    "lead1": "จับไม้แต่ละแท่งขณะร่วงให้ตรงกับเส้นพอดี",
+    "lead2": "ไม้ทั้ง 8 แท่งจะร่วงลงมาแบบสุ่ม ทั้งลำดับและช่วงเวลา",
+    "lead3": "ยิ่งจุดกึ่งกลางของแถบเป้าอยู่ใกล้เส้นมากเท่าไร ก็ยิ่งได้คะแนนมากขึ้น",
+    "bestEmpty": "เฉพาะรอบที่เล่นจบและเริ่มด้วยชื่อที่ใช้ได้เท่านั้นที่จะส่งเข้าตารางอันดับ สถิติส่วนตัวจะบันทึกไว้ในอุปกรณ์นี้ด้วย",
+    "bestWith": "สถิติส่วนตัว: {score} / {max} เฉพาะรอบที่เล่นจบและเริ่มด้วยชื่อที่ใช้ได้เท่านั้นที่จะส่งเข้าตารางอันดับ",
+    "nameLabel": "ชื่อสำหรับตารางอันดับ (ไม่บังคับ ไม่เกิน 10 ตัวอักษร)",
+    "namePlaceholder": "เว้นว่างไว้เพื่อเล่นโดยไม่ใช้ชื่อ",
+    "clearSavedName": "ล้างชื่อที่บันทึกไว้",
+    "nameStorageError": "เปลี่ยนชื่อที่บันทึกไว้ไม่ได้ โปรดตรวจสอบการตั้งค่าที่เก็บข้อมูลของเบราว์เซอร์",
+    "start": "เริ่มเกม",
+    "rules": "วิธีเล่น",
+    "shareGame": "แชร์เกม",
+    "shareX": "แชร์บน X",
+    "shareManualCopy": "เปิดหน้าต่างโพสต์ไม่ได้ โปรดคัดลอกข้อความนี้",
+    "other": "เกมอื่น ๆ",
+    "guestNote": "เล่นโดยไม่ใส่ชื่อได้ เฉพาะรอบที่เล่นจบและเริ่มด้วยชื่อที่ใช้ได้เท่านั้นที่จะส่งเข้าตารางอันดับ",
+    "game": "เกม",
+    "sticks": "จำนวนไม้",
+    "score": "คะแนน",
+    "next": "ถัดไป",
+    "retire": "เลิกรอบนี้",
+    "stage": "พื้นที่ที่ไม้ร่วง",
+    "judgeInitial": "แตะพื้นที่จับเพื่อจับไม้",
+    "catch": "แตะที่นี่เพื่อจับ",
+    "catchNote": "จับได้เฉพาะไม้ที่กำลังร่วง",
+    "results": "ผลการเล่น",
+    "clear": "เล่นจบ",
+    "totalCaption": "คะแนนรวมจากไม้ทั้ง 8 แท่ง",
+    "submitWaiting": "กำลังรอส่งเข้าตารางอันดับ",
+    "ranking": "ตารางอันดับ",
+    "checking": "กำลังตรวจสอบ",
+    "loading": "กำลังโหลดตารางอันดับ…",
+    "shareResult": "แชร์ผลการเล่น",
+    "retry": "เล่นอีกครั้ง",
+    "finish": "ออกจากเกม",
+    "rule1": "ไม้ทั้ง 8 แท่งจะร่วงลงมาทีละแท่ง",
+    "rule2": "แตะพื้นที่จับด้านล่างเพื่อจับไม้ที่กำลังร่วง",
+    "rule3": "ยิ่งจุดกึ่งกลางของแถบเป้าอยู่ใกล้เส้นมากเท่าไร ก็ยิ่งได้คะแนนมากขึ้น",
+    "rule4": "ได้สูงสุด 100 คะแนนต่อแท่ง หรือ 800 คะแนนเมื่อรวมทั้ง 8 แท่ง",
+    "close": "ปิด",
+    "points": "{n} คะแนน",
+    "number": "หมายเลข {n}",
+    "ready": "เตรียมตัว",
+    "done": "เสร็จแล้ว",
+    "countdown": "เริ่มในอีก 3 วินาที",
+    "go": "เริ่ม!",
+    "aim": "เล็งให้ตรงกับเส้นในแถบเป้า",
+    "round": "แท่งที่ {round}: หมายเลข {stick}",
+    "judged": "{judgment}! {points}",
+    "perfect": "สมบูรณ์แบบ",
+    "god": "ไวปานสายฟ้า",
+    "success": "จับได้",
+    "near": "เกือบตรง",
+    "off": "นอกเป้า",
+    "miss": "พลาด",
+    "average": "ค่าเฉลี่ย",
+    "clearCaption": "เฉลี่ย {average} / เต็ม 800 คะแนน",
+    "retireCaption": "ความคืบหน้า: {round}/{total} • คะแนน: {points}",
+    "quantity": "{n}",
+    "progress": "ความคืบหน้า",
+    "progressValue": "ไม้ {round}/{total} แท่ง",
+    "currentScore": "คะแนนปัจจุบัน",
+    "submission": "ส่งผลเข้าตารางอันดับ",
+    "none": "ไม่มี",
+    "noRecord": "ยังไม่มีผลการจับที่บันทึกไว้",
+    "earlyQuit": "คุณออกก่อนที่ระบบจะคิดคะแนนครั้งแรก",
+    "roundName": "แท่งที่ {n}",
+    "detail": "ไม้หมายเลข {stick} / คลาด {distance} pt",
+    "detailScore": "{points} • {judgment}",
+    "submitting": "กำลังส่งผลเข้าตารางอันดับ…",
+    "guestSkip": "ไม่ได้ส่งเข้าตารางอันดับ เพราะคุณเริ่มโดยไม่ใส่ชื่อ",
+    "retireSkip": "ไม่ได้ส่งเข้าตารางอันดับ เพราะคุณเลิกรอบนี้",
+    "anonymous": "ไม่ระบุชื่อ",
+    "emptyRank": "ตารางอันดับยังไม่มีรายการ เล่นให้จบหนึ่งรอบเพื่อให้ผลปรากฏที่นี่",
+    "rank": "อันดับ {n}",
+    "top": "{n} อันดับแรก",
+    "fetchFail": "โหลดไม่สำเร็จ",
+    "retryRank": "โหลดตารางอันดับใหม่",
+    "fetchNote": "โหลดตารางอันดับไม่ได้ แต่ยังดูผลการเล่นได้จากหน้าจอนี้",
+    "submitReject": "ตารางอันดับไม่รับผลที่ส่ง คุณยังดูชื่อและคะแนนได้ที่นี่",
+    "newBest": "สถิติส่วนตัวใหม่!",
+    "submitSuccess": "ส่งผลเข้าตารางอันดับแล้ว",
+    "submitError": "ส่งผลเข้าตารางอันดับไม่ได้ แต่ยังใช้หน้าผลการเล่นได้",
+    "shareDesc": "เกมทดสอบปฏิกิริยา จับไม้ที่กำลังร่วงให้ตรงกับเส้นพอดี",
+    "shareTitle": "ผลการเล่น {title}",
+    "shareLine": "{label}: {value}",
+    "finalScore": "คะแนนสุดท้าย",
+    "copied": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+    "copyError": "คัดลอกไม่สำเร็จ"
+  }
+};
+      const EVAL_KEYS = Object.freeze({'完璧':'perfect','神反応':'god','成功':'success','惜しい':'near','ズレた':'off','失敗':'miss'});
+
+      function localeFor(code) {
+        const id = String(code || '').trim().replace(/_/g, '-').toLowerCase();
+        const [base, script] = id.split('-');
+        if (base === 'zh') {
+          if (script === 'hans') return 'zh-Hans';
+          if (script === 'hant') return 'zh-Hant';
+          return /(?:^|-)(?:tw|hk|mo)(?:-|$)/.test(id) ? 'zh-Hant' : 'zh-Hans';
+        }
+        if (base === 'pt') return 'pt-BR';
+        return Object.hasOwn(LANG_NAMES, base) ? base : null;
+      }
+      let locale = 'ja';
+      function tr(key, values = {}) {
+        return (TEXT[locale]?.[key] ?? TEXT.ja[key]).replace(/\{(\w+)\}/g, (_, name) => String(values[name] ?? ''));
+      }
+      const points = (n) => tr('points', {n});
+      const evaluationText = (v) => tr(EVAL_KEYS[v]);
+      const itemQuantity = (n) => tr('quantity', {n});
+      const shareLine = (label, value) => tr('shareLine', {label: tr(label), value});
+      function applyLocale() {
+        document.documentElement.lang = locale;
+        document.querySelectorAll('[data-l10n]').forEach(node => {
+          const [key, n] = node.dataset.l10n.split(':');
+          node.textContent = tr(key, {n});
+        });
+        for (const attr of ['aria-label', 'placeholder']) {
+          document.querySelectorAll('[data-l10n-' + attr + ']').forEach(node => {
+            node.setAttribute(attr, tr(node.getAttribute('data-l10n-' + attr)));
+          });
+        }
+        updateBestInfo();
+      }
+      function installLocale() {
+        const select = document.getElementById('languageSelect');
+        const stored = localeFor(readStored(LANG_KEY));
+        const preferences = Array.from(navigator.languages || []).filter(tag => typeof tag === 'string' && tag.trim());
+        if (!preferences.length && typeof navigator.language === 'string' && navigator.language.trim()) preferences.push(navigator.language);
+        locale = stored || preferences.map(localeFor).find(Boolean) || (preferences.length ? 'en' : 'ja');
+        for (const [value, label] of Object.entries(LANG_NAMES)) {
+          const option = document.createElement('option');
+          option.value = value;
+          option.lang = value;
+          option.textContent = label;
+          select.appendChild(option);
+        }
+        select.value = locale;
+        select.addEventListener('change', () => {
+          if (state.screen !== 'home' || !Object.hasOwn(LANG_NAMES, select.value)) {
+            select.value = locale;
+            return;
+          }
+          locale = select.value;
+          writeStored(LANG_KEY, locale);
+          applyLocale();
+        });
+        applyLocale();
+      }
 
       const els = {
         homeScreen: document.getElementById('homeScreen'),
         gameScreen: document.getElementById('gameScreen'),
         resultScreen: document.getElementById('resultScreen'),
         playerNameInput: document.getElementById('playerNameInput'),
+        clearNameButton: document.getElementById('clearNameButton'),
         bestInfo: document.getElementById('bestInfo'),
         startButton: document.getElementById('startButton'),
         rulesButton: document.getElementById('rulesButton'),
@@ -983,6 +2491,7 @@
         submitStatus: document.getElementById('submitStatus'),
         rankingStatus: document.getElementById('rankingStatus'),
         rankingList: document.getElementById('rankingList'),
+        rankingRetryButton: document.getElementById('rankingRetryButton'),
         resultShareButton: document.getElementById('resultShareButton'),
         restartButton: document.getElementById('restartButton'),
         finishButton: document.getElementById('finishButton'),
@@ -990,7 +2499,8 @@
       };
 
       const state = {
-        playerName: '',
+        play: null,
+        playSerial: 0,
         screen: 'home',
         phase: 'home',
         order: [],
@@ -1057,40 +2567,76 @@
         }
       }
 
+      function scheduleRunTimer(slot, callback, delay) {
+        const play = state.play;
+        const id = window.setTimeout(() => {
+          if (state.play !== play || state[slot] !== id) return;
+          state[slot] = 0;
+          callback();
+        }, delay);
+        state[slot] = id;
+      }
+
+      function requestRunFrame() {
+        const play = state.play;
+        const id = requestAnimationFrame((timestamp) => {
+          if (state.play !== play || state.rafId !== id) return;
+          state.rafId = 0;
+          tickFall(timestamp);
+        });
+        state.rafId = id;
+      }
+
+      function readStored(key) {
+        try { return localStorage.getItem(key); } catch (_) { return null; }
+      }
+
+      function writeStored(key, value) {
+        try { localStorage.setItem(key, value); } catch (_) { /* Storage is optional. */ }
+      }
+
       function getBestScore() {
-        const raw = localStorage.getItem(BEST_STORAGE_KEY);
+        const raw = readStored(BEST_STORAGE_KEY);
         if (raw === null) return null;
         const value = Number(raw);
         return Number.isFinite(value) ? value : null;
       }
 
       function setBestScore(value) {
-        localStorage.setItem(BEST_STORAGE_KEY, String(value));
+        writeStored(BEST_STORAGE_KEY, String(value));
       }
 
       function updateBestInfo() {
         const best = getBestScore();
         if (best === null) {
-          els.bestInfo.textContent = 'ランキングはクリア時に自動送信します。自己ベストはこの端末にも保存します。';
+          els.bestInfo.textContent = tr('bestEmpty');
         } else {
-          els.bestInfo.textContent = `自己ベスト：${best}点 / ${MAX_TOTAL_SCORE}点。ランキングはクリア時に自動送信します。`;
+          els.bestInfo.textContent = tr('bestWith', {score:points(best), max:points(MAX_TOTAL_SCORE)});
         }
       }
 
       function loadSavedName() {
-        const saved = localStorage.getItem(NAME_STORAGE_KEY) || '';
-        els.playerNameInput.value = saved.slice(0, 10);
+        els.playerNameInput.value = normalizePlayName(readStored(NAME_STORAGE_KEY));
       }
 
-      function getValidatedName() {
-        const value = els.playerNameInput.value.trim().slice(0, 10);
-        if (!value) return '';
+      function normalizePlayName(input) {
+        if (typeof input !== 'string') return '';
+        const value = input.trim();
+        if (!value || value.length > 10 || /[\p{Cc}\p{Cs}\p{Zl}\p{Zp}]/u.test(value)
+          || !/[^\p{Default_Ignorable_Code_Point}\s]/u.test(value)) return '';
         return value;
       }
 
       function saveName(name) {
-        localStorage.setItem(NAME_STORAGE_KEY, name);
+        writeStored(NAME_STORAGE_KEY, name);
         els.playerNameInput.value = name;
+      }
+
+      function clearSavedName() {
+        if (state.screen !== 'home' || state.phase !== 'home') return;
+        try { localStorage.removeItem(NAME_STORAGE_KEY); }
+        catch (_) { showToast(tr('nameStorageError')); return; }
+        els.playerNameInput.value = '';
       }
 
       function showToast(message, durationMs = 1000) {
@@ -1108,13 +2654,13 @@
 
       function updateHud() {
         els.progressText.textContent = `${state.judgedCount}/${STICK_COUNT}`;
-        els.scoreText.textContent = `${state.totalScore}点`;
+        els.scoreText.textContent = points(state.totalScore);
         if (state.phase === 'falling' && state.activeIndex >= 0) {
-          els.nextStickText.textContent = `${state.activeIndex + 1}番`;
+          els.nextStickText.textContent = tr('number', {n:state.activeIndex + 1});
         } else if (state.phase === 'countdown') {
-          els.nextStickText.textContent = '準備';
+          els.nextStickText.textContent = tr('ready');
         } else if (state.judgedCount >= STICK_COUNT) {
-          els.nextStickText.textContent = '完了';
+          els.nextStickText.textContent = tr('done');
         } else {
           els.nextStickText.textContent = '-';
         }
@@ -1186,31 +2732,22 @@
       }
 
       function startGame() {
-        const name = getValidatedName();
-        if (!name) {
-          showToast('名前を入力してください', 1300);
-          els.playerNameInput.focus();
-          return;
-        }
-        saveName(name);
-        state.playerName = name;
-        beginNewGame();
+        if (state.screen !== 'home' || state.phase !== 'home') return;
+        const name = normalizePlayName(els.playerNameInput.value);
+        if (name) saveName(name);
+        else els.playerNameInput.value = '';
+        beginNewGame(name);
       }
 
       function restartGame() {
-        const saved = (localStorage.getItem(NAME_STORAGE_KEY) || '').trim().slice(0, 10);
-        if (!saved) {
-          showScreen('home');
-          showToast('名前を入力してください', 1300);
-          return;
-        }
-        els.playerNameInput.value = saved;
-        state.playerName = saved;
-        beginNewGame();
+        if (state.screen !== 'result' || state.phase !== 'finished' || !state.play) return;
+        beginNewGame(state.play.name);
       }
 
-      function beginNewGame() {
+      function beginNewGame(name) {
         clearTimers();
+        state.play = Object.freeze({ name, serial: ++state.playSerial });
+        state.rankingRequestId += 1;
         state.phase = 'countdown';
         state.order = shuffle(Array.from({ length: STICK_COUNT }, (_, i) => i));
         state.stickConfigs = makeStickConfigs();
@@ -1227,11 +2764,9 @@
         renderSticks();
         resetStickClasses();
         updateHud();
-        setJudgeText('3秒後に始まります');
+        setJudgeText(tr('countdown'));
         showScreen('game');
-        window.setTimeout(() => {
-          startCountdown(3);
-        }, 80);
+        scheduleRunTimer('countdownTimerId', () => startCountdown(3), 80);
       }
 
       function startCountdown(count) {
@@ -1240,16 +2775,16 @@
         els.countdown.textContent = String(count);
         updateHud();
         if (count <= 0) {
-          els.countdown.textContent = '開始';
-          state.countdownTimerId = window.setTimeout(() => {
+          els.countdown.textContent = tr('go');
+          scheduleRunTimer('countdownTimerId', () => {
             els.countdown.classList.remove('show');
             state.countdownTimerId = 0;
-            setJudgeText('指定エリアのラインを狙ってください');
+            setJudgeText(tr('aim'));
             scheduleNextStick();
           }, 360);
           return;
         }
-        state.countdownTimerId = window.setTimeout(() => {
+        scheduleRunTimer('countdownTimerId', () => {
           startCountdown(count - 1);
         }, 720);
       }
@@ -1262,7 +2797,7 @@
         state.phase = 'between';
         updateHud();
         const delay = randInt(MIN_NEXT_DELAY_MS, MAX_NEXT_DELAY_MS);
-        state.nextTimerId = window.setTimeout(() => {
+        scheduleRunTimer('nextTimerId', () => {
           state.nextTimerId = 0;
           const stickIndex = state.order[state.judgedCount];
           beginStickFall(stickIndex);
@@ -1285,9 +2820,9 @@
 
         config.element.classList.add('active');
         config.element.style.transform = `translateX(-50%) translateY(${state.currentY}px)`;
-        setJudgeText(`${state.activeRound}本目：${stickIndex + 1}番の棒`);
+        setJudgeText(tr('round', {round:state.activeRound, stick:stickIndex + 1}));
         updateHud();
-        state.rafId = requestAnimationFrame(tickFall);
+        requestRunFrame();
       }
 
       function tickFall(now) {
@@ -1303,7 +2838,7 @@
           judgeActiveStick({ timedOut: true });
           return;
         }
-        state.rafId = requestAnimationFrame(tickFall);
+        requestRunFrame();
       }
 
       function handleTapArea(event) {
@@ -1346,19 +2881,19 @@
         state.activeRound = 0;
 
         if (timedOut) {
-          setJudgeText(`失敗 0点`);
+          setJudgeText(tr('miss') + ' ' + points(0));
         } else {
-          setJudgeText(`${evaluation}！ ${score}点`);
+          setJudgeText(tr('judged', {judgment:evaluationText(evaluation), points:points(score)}));
         }
         updateHud();
 
         if (state.judgedCount >= STICK_COUNT) {
-          state.nextTimerId = window.setTimeout(() => {
+          scheduleRunTimer('nextTimerId', () => {
             state.nextTimerId = 0;
             finishGame('clear');
           }, 420);
         } else {
-          state.nextTimerId = window.setTimeout(() => {
+          scheduleRunTimer('nextTimerId', () => {
             state.nextTimerId = 0;
             scheduleNextStick();
           }, 360);
@@ -1388,6 +2923,9 @@
       }
 
       function finishGame(mode) {
+        if (state.screen !== 'game' || !state.play || state.phase === 'finished') return;
+        if (mode === 'clear' && state.judgedCount < STICK_COUNT) return;
+        const play = state.play;
         clearTimers();
         state.phase = 'finished';
         state.lastResultMode = mode;
@@ -1400,8 +2938,10 @@
         renderResult(mode);
         showScreen('result');
         updateBestInfo();
-        if (mode === 'clear') {
-          sendScoreOnce().then(() => loadResultRanking());
+        if (mode === 'clear' && play.name) {
+          sendScoreOnce(play).then(() => {
+            if (state.play === play && state.screen === 'result') loadResultRanking();
+          });
         } else {
           loadResultRanking();
         }
@@ -1430,25 +2970,25 @@
 
         resetRankingView();
 
-        els.resultBadge.textContent = isClear ? 'クリア' : 'リタイア';
-        els.finalScoreText.textContent = isClear ? `${total}点` : 'リタイア';
+        els.resultBadge.textContent = isClear ? tr('clear') : tr('retire');
+        els.finalScoreText.textContent = isClear ? points(total) : tr('retire');
         const progressForResult = isClear ? state.judgedCount : clamp(state.retireProgress || state.judgedCount, 0, STICK_COUNT);
-        els.resultCaption.textContent = isClear ? `平均 ${average}点 / 800点満点` : `進行 ${progressForResult}/${STICK_COUNT}本目・現在 ${total}点`;
+        els.resultCaption.textContent = isClear ? tr('clearCaption', {average:points(average)}) : tr('retireCaption', {round:progressForResult, total:STICK_COUNT, points:points(total)});
 
         const summaryItems = isClear ? [
-          ['結果', 'クリア'],
-          ['平均', `${average}点`],
-          ['完璧', `${counts['完璧']}本`],
-          ['神反応', `${counts['神反応']}本`],
-          ['成功', `${counts['成功']}本`],
-          ['惜しい', `${counts['惜しい']}本`],
-          ['ズレた', `${counts['ズレた']}本`],
-          ['失敗', `${counts['失敗']}本`]
+          [tr('results'), tr('clear')],
+          [tr('average'), points(average)],
+          [tr('perfect'), itemQuantity(counts['完璧'])],
+          [tr('god'), itemQuantity(counts['神反応'])],
+          [tr('success'), itemQuantity(counts['成功'])],
+          [tr('near'), itemQuantity(counts['惜しい'])],
+          [tr('off'), itemQuantity(counts['ズレた'])],
+          [tr('miss'), itemQuantity(counts['失敗'])]
         ] : [
-          ['結果', 'リタイア'],
-          ['進行', `${progressForResult}/${STICK_COUNT}本目`],
-          ['現在スコア', `${total}点`],
-          ['ランキング送信', 'なし']
+          [tr('results'), tr('retire')],
+          [tr('progress'), tr('progressValue', {round:progressForResult, total:STICK_COUNT})],
+          [tr('currentScore'), points(total)],
+          [tr('submission'), tr('none')]
         ];
 
         els.summaryGrid.textContent = '';
@@ -1470,7 +3010,14 @@
         if (state.results.length === 0) {
           const empty = document.createElement('div');
           empty.className = 'result-row';
-          empty.innerHTML = '<strong>記録なし</strong><span>判定前にリタイアしました</span><span class="eval">-</span>';
+          const label = document.createElement('strong');
+          label.textContent = tr('noRecord');
+          const reason = document.createElement('span');
+          reason.textContent = tr('earlyQuit');
+          const value = document.createElement('span');
+          value.className = 'eval';
+          value.textContent = '-';
+          empty.append(label, reason, value);
           els.resultList.appendChild(empty);
         } else {
           state.results.forEach((result) => {
@@ -1478,14 +3025,14 @@
             row.className = 'result-row';
 
             const left = document.createElement('strong');
-            left.textContent = `${result.round}本目`;
+            left.textContent = tr('roundName', {n:result.round});
 
             const middle = document.createElement('span');
-            middle.textContent = `棒${result.stickNumber} / ズレ ${result.distancePx}pt`;
+            middle.textContent = tr('detail', {stick:result.stickNumber, distance:result.distancePx});
 
             const right = document.createElement('span');
             right.className = 'eval';
-            right.textContent = `${result.score}点 ${result.evaluation}`;
+            right.textContent = tr('detailScore', {points:points(result.score), judgment:evaluationText(result.evaluation)});
 
             row.appendChild(left);
             row.appendChild(middle);
@@ -1495,9 +3042,9 @@
         }
 
         if (isClear) {
-          setSubmitStatus('ランキングへ送信中です。', '');
+          setSubmitStatus(state.play?.name ? tr('submitting') : tr('guestSkip'), '');
         } else {
-          setSubmitStatus('リタイアのため、ランキングへは送信しません。', '');
+          setSubmitStatus(tr('retireSkip'), '');
         }
         state.lastShareText = buildResultShareText(mode);
       }
@@ -1510,24 +3057,31 @@
 
       function resetRankingView() {
         state.rankingRequestId += 1;
-        els.rankingStatus.textContent = '確認中';
+        els.rankingRetryButton.hidden = true;
+        showRankingLoading();
+      }
+
+      function showRankingLoading() {
+        els.rankingRetryButton.disabled = true;
+        els.rankingList.setAttribute('aria-busy', 'true');
+        els.rankingStatus.textContent = tr('checking');
         els.rankingList.textContent = '';
         const empty = document.createElement('div');
         empty.className = 'ranking-empty';
-        empty.textContent = 'ランキングを読み込みます。';
+        empty.textContent = tr('loading');
         els.rankingList.appendChild(empty);
       }
 
       function formatRankingScore(score) {
         const value = Number(score);
         if (!Number.isFinite(value)) return '-';
-        return `${Math.round(value)}点`;
+        return points(Math.round(value));
       }
 
       function pickRankingName(row) {
         const name = row.display_name || row.result_display_name || row.name || row.normalized_name || '';
         const clean = String(name).trim();
-        return clean || '名無し';
+        return clean || tr('anonymous');
       }
 
       function pickRankingScore(row) {
@@ -1546,13 +3100,13 @@
         return NaN;
       }
 
-      function pickRankingRank(row, index) {
+      function pickRankingRank(row) {
         const candidates = [row.rank_no, row.rank, row.ranking, row.position];
         for (const candidate of candidates) {
           const value = Number(candidate);
-          if (Number.isFinite(value) && value > 0) return value;
+          if (Number.isSafeInteger(value) && value > 0 && (typeof candidate === 'string' || typeof candidate === 'number')) return value;
         }
-        return index + 1;
+        return null;
       }
 
       async function callSupabaseRpc(functionName, payload) {
@@ -1572,22 +3126,11 @@
       }
 
       async function fetchBestRanking(limit) {
-        const payloads = [
-          { p_game_slug: GAME_SLUG, p_limit: limit },
-          { p_game_slug: GAME_SLUG, limit },
-          { game_slug: GAME_SLUG, limit },
-          { p_game_slug: GAME_SLUG }
-        ];
-        let lastError = null;
-        for (const payload of payloads) {
-          try {
-            const data = await callSupabaseRpc('get_best_score_ranking', payload);
-            return Array.isArray(data) ? data.slice(0, limit) : [];
-          } catch (error) {
-            lastError = error;
-          }
+        const data = await callSupabaseRpc('get_best_score_ranking', { p_game_slug: GAME_SLUG, p_limit: limit });
+        if (!Array.isArray(data) || data.some(row => !row || typeof row !== 'object' || Array.isArray(row))) {
+          throw new Error('invalid ranking response');
         }
-        throw lastError || new Error('ranking fetch failed');
+        return data.slice(0, limit);
       }
 
       function renderRankingRows(rows) {
@@ -1595,18 +3138,19 @@
         if (!rows.length) {
           const empty = document.createElement('div');
           empty.className = 'ranking-empty';
-          empty.textContent = 'まだランキングがありません。クリアするとここに表示されます。';
+          empty.textContent = tr('emptyRank');
           els.rankingList.appendChild(empty);
           return;
         }
 
-        rows.forEach((row, index) => {
+        rows.forEach(row => {
           const line = document.createElement('div');
           line.className = 'ranking-row';
 
           const rank = document.createElement('span');
           rank.className = 'ranking-rank';
-          rank.textContent = `${pickRankingRank(row, index)}位`;
+          const position = pickRankingRank(row);
+          rank.textContent = position === null ? '—' : tr('rank', {n:position});
 
           const name = document.createElement('span');
           name.className = 'ranking-name';
@@ -1624,25 +3168,34 @@
       }
 
       async function loadResultRanking() {
-        const requestId = state.rankingRequestId;
+        if (state.screen !== 'result') return;
+        const requestId = ++state.rankingRequestId;
+        const current = () => requestId === state.rankingRequestId && state.screen === 'result';
+        showRankingLoading();
         try {
           const rows = await fetchBestRanking(RANKING_LIMIT);
-          if (requestId !== state.rankingRequestId) return;
-          els.rankingStatus.textContent = `上位${RANKING_LIMIT}件`;
+          if (!current()) return;
+          els.rankingStatus.textContent = rows.length ? tr('top', {n:RANKING_LIMIT}) : tr('emptyRank');
           renderRankingRows(rows);
+          els.rankingRetryButton.hidden = true;
         } catch (error) {
-          if (requestId !== state.rankingRequestId) return;
-          els.rankingStatus.textContent = '取得失敗';
+          if (!current()) return;
+          els.rankingStatus.textContent = tr('fetchFail');
           els.rankingList.textContent = '';
           const empty = document.createElement('div');
           empty.className = 'ranking-empty';
-          empty.textContent = 'ランキングを読み込めませんでした。プレイ結果はこの画面で確認できます。';
+          empty.textContent = tr('fetchNote');
           els.rankingList.appendChild(empty);
+          els.rankingRetryButton.hidden = false;
+          els.rankingRetryButton.disabled = false;
+        } finally {
+          if (current()) els.rankingList.setAttribute('aria-busy', 'false');
         }
       }
 
-      async function sendScoreOnce() {
-        if (state.submitStarted) return;
+      async function sendScoreOnce(play = state.play) {
+        if (!play?.name || state.play !== play || state.screen !== 'result' || state.lastResultMode !== 'clear' || state.submitStarted) return;
+        const current = () => state.play === play && state.screen === 'result';
         state.submitStarted = true;
         const score = clamp(state.totalScore, 0, MAX_TOTAL_SCORE);
         try {
@@ -1654,7 +3207,7 @@
               'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
             },
             body: JSON.stringify({
-              p_display_name: state.playerName,
+              p_display_name: play.name,
               p_game_slug: GAME_SLUG,
               p_score: score,
               p_client_version: CLIENT_VERSION
@@ -1664,29 +3217,33 @@
             throw new Error(`HTTP ${response.status}`);
           }
           const data = await response.json().catch(() => null);
+          if (!current()) return;
           const result = Array.isArray(data) ? data[0] : data;
           if (result && result.accepted === false) {
-            setSubmitStatus('ランキング送信は受け付けられませんでした。名前やスコアは画面で確認できます。', 'bad');
+            setSubmitStatus(tr('submitReject'), 'bad');
             return;
           }
-          const bestLabel = result && result.is_new_best ? '自己ベスト更新。' : '';
-          setSubmitStatus(`ランキングへ送信しました。${bestLabel}`.trim(), 'good');
+          const bestLabel = result && result.is_new_best ? tr('newBest') : '';
+          setSubmitStatus((tr('submitSuccess') + (bestLabel ? (locale === 'ja' ? '' : ' ') + bestLabel : '')).trim(), 'good');
         } catch (error) {
-          setSubmitStatus('ランキング送信に失敗しました。結果画面はそのまま使えます。', 'bad');
+          if (current()) setSubmitStatus(tr('submitError'), 'bad');
         }
       }
 
       function buildHomeShareText() {
-        return `${GAME_TITLE}\n落ちてくる棒を、ラインぴったりで止める反射神経ゲーム。\n${GAME_URL}`;
+        return [GAME_TITLE, tr('shareDesc'), GAME_URL].join('\n');
       }
 
       function buildResultShareText(mode) {
+        const title = tr('shareTitle', {title:GAME_TITLE});
         if (mode === 'retire') {
-          return `${GAME_TITLE} 結果\n結果：リタイア\n進行：${clamp(state.retireProgress || state.judgedCount, 0, STICK_COUNT)}/${STICK_COUNT}本目\n現在スコア：${state.totalScore}点`;
+          const round = clamp(state.retireProgress || state.judgedCount, 0, STICK_COUNT);
+          return [title, shareLine('results', tr('retire')), shareLine('progress', tr('progressValue', {round, total:STICK_COUNT})), shareLine('currentScore', points(state.totalScore))].join('\n');
         }
         const counts = countEvaluations();
         const average = (state.totalScore / STICK_COUNT).toFixed(1);
-        return `${GAME_TITLE} 結果\n結果：クリア\n最終スコア：${state.totalScore}点\n平均：${average}点\n完璧：${counts['完璧']}本\n神反応：${counts['神反応']}本\n失敗：${counts['失敗']}本`;
+        return [title, shareLine('results', tr('clear')), shareLine('finalScore', points(state.totalScore)), shareLine('average', points(average)),
+          shareLine('perfect', itemQuantity(counts['完璧'])), shareLine('god', itemQuantity(counts['神反応'])), shareLine('miss', itemQuantity(counts['失敗']))].join('\n');
       }
 
       async function copyText(text) {
@@ -1717,15 +3274,36 @@
         return ok;
       }
 
+      async function shareOnX(shareText) {
+        const text = shareText.split(GAME_URL).join('').trimEnd();
+        const intent = new URL('https://twitter.com/intent/tweet');
+        intent.searchParams.set('text', text);
+        intent.searchParams.set('url', GAME_URL);
+        let popup;
+        try {
+          popup = window.open('about:blank', '_blank');
+          if (popup && !popup.closed) {
+            popup.opener = null;
+            popup.location.replace(intent.href);
+            return;
+          }
+        } catch {
+          try { popup?.close(); } catch {}
+        }
+        const fullText = text + '\n' + GAME_URL;
+        if (await copyText(fullText)) {
+          showToast(tr('copied'));
+          return;
+        }
+        window.prompt(tr('shareManualCopy'), fullText);
+      }
+
       async function shareHome() {
-        const ok = await copyText(buildHomeShareText());
-        showToast(ok ? 'クリップボードにコピーしました' : 'コピーできませんでした');
+        return shareOnX(buildHomeShareText());
       }
 
       async function shareResult() {
-        const text = state.lastShareText || buildResultShareText(state.lastResultMode);
-        const ok = await copyText(text);
-        showToast(ok ? 'クリップボードにコピーしました' : 'コピーできませんでした');
+        return shareOnX(state.lastShareText || buildResultShareText(state.lastResultMode));
       }
 
       function openRules() {
@@ -1738,15 +3316,20 @@
 
       function returnHome() {
         clearTimers();
+        state.play = null;
+        state.rankingRequestId += 1;
         state.phase = 'home';
         updateBestInfo();
+        loadSavedName();
         showScreen('home');
       }
 
       function bindEvents() {
         els.startButton.addEventListener('click', startGame);
+        els.clearNameButton.addEventListener('click', clearSavedName);
         els.restartButton.addEventListener('click', restartGame);
         els.finishButton.addEventListener('click', returnHome);
+        els.rankingRetryButton.addEventListener('click', loadResultRanking);
         els.retireButton.addEventListener('click', retireGame);
         els.rulesButton.addEventListener('click', openRules);
         els.closeRulesButton.addEventListener('click', closeRules);
@@ -1766,6 +3349,7 @@
       function installMobileGuards() {
         let lastTouchEnd = 0;
         document.addEventListener('touchend', (event) => {
+          if (event.target.closest('select')) return;
           const now = Date.now();
           if (now - lastTouchEnd <= 320) {
             event.preventDefault();
@@ -1788,7 +3372,7 @@
         }, { passive: false });
 
         document.addEventListener('contextmenu', (event) => {
-          if (!event.target.closest('input, textarea, a')) {
+          if (!event.target.closest('input, textarea, select, a')) {
             event.preventDefault();
           }
         });
@@ -1796,7 +3380,7 @@
 
       function init() {
         loadSavedName();
-        updateBestInfo();
+        installLocale();
         bindEvents();
         installMobileGuards();
       }
