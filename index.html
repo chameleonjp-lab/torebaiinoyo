@@ -812,7 +812,14 @@
     html:not(:lang(ja)) .hud-value { white-space:normal; }
     html:not(:lang(ja)) .result-row { grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr); }
     html:not(:lang(ja)) :is(.btn,.retire-btn,.hud-value,.summary-item,.result-row,.score-big .value,.result-title) { overflow-wrap:anywhere; }
-  </style>
+  
+    #homeShareButton, #resultShareButton, #shareGameBtn, #shareResultBtn {
+      background: #000;
+      color: #fff;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+</style>
 </head>
 <body>
   <div class="app">
@@ -843,7 +850,7 @@
             <button id="startButton" class="btn primary" type="button" data-l10n="start">ゲーム開始</button>
             <div class="button-grid two">
               <button id="rulesButton" class="btn secondary" type="button" data-l10n="rules">ルール説明</button>
-              <button id="homeShareButton" class="btn secondary" type="button" data-l10n="shareGame">ゲームをシェア</button>
+              <button id="homeShareButton" class="btn secondary" type="button" data-l10n="shareX">Xでシェア</button>
             </div>
             <a class="btn linkish" href="https://chameleonjp.codeberg.page/chameleonjp_lab/" data-l10n="other">その他のゲームへ</a>
           </div>
@@ -915,7 +922,7 @@
           </section>
 
           <div class="button-grid">
-            <button id="resultShareButton" class="btn primary" type="button" data-l10n="shareResult">ゲーム結果をシェア</button>
+            <button id="resultShareButton" class="btn primary" type="button" data-l10n="shareX">Xでシェア</button>
             <div class="button-grid two">
               <button id="restartButton" class="btn secondary" type="button" data-l10n="retry">もう一度遊ぶ</button>
               <button id="finishButton" class="btn secondary" type="button" data-l10n="finish">ゲーム終了</button>
@@ -989,6 +996,8 @@
     "start": "ゲーム開始",
     "rules": "ルール説明",
     "shareGame": "ゲームをシェア",
+    "shareX": "Xでシェア",
+    "shareManualCopy": "投稿画面が開けませんでした。この文章をコピーしてください。",
     "other": "その他のゲームへ",
     "guestNote": "名前なしでも遊べます。開始時に有効な名前がある場合のみ、完走結果をランキングへ送信します。",
     "game": "ゲーム画面",
@@ -1080,6 +1089,8 @@
     "start": "Start game",
     "rules": "How to play",
     "shareGame": "Share game",
+    "shareX": "Share on X",
+    "shareManualCopy": "The composer did not open. Copy this text.",
     "other": "Other games",
     "guestNote": "You can play without a name. Only completed runs started with a valid name are sent to the leaderboard.",
     "game": "Game",
@@ -1171,6 +1182,8 @@
     "start": "Empezar partida",
     "rules": "Cómo jugar",
     "shareGame": "Compartir juego",
+    "shareX": "Compartir en X",
+    "shareManualCopy": "No se abrió el editor. Copia este texto.",
     "other": "Otros juegos",
     "guestNote": "Puedes jugar sin nombre. Solo se envían a la clasificación las partidas completadas que empezaron con un nombre válido.",
     "game": "Partida",
@@ -1262,6 +1275,8 @@
     "start": "Começar partida",
     "rules": "Como jogar",
     "shareGame": "Compartilhar jogo",
+    "shareX": "Compartilhar no X",
+    "shareManualCopy": "O editor não abriu. Copie este texto.",
     "other": "Outros jogos",
     "guestNote": "Você pode jogar sem nome. Só as partidas concluídas que começaram com um nome válido são enviadas ao ranking.",
     "game": "Partida",
@@ -1353,6 +1368,8 @@
     "start": "开始游戏",
     "rules": "玩法说明",
     "shareGame": "分享游戏",
+    "shareX": "在 X 上分享",
+    "shareManualCopy": "未能打开发布窗口。请复制这段文字。",
     "other": "其他游戏",
     "guestNote": "无需输入名称也可以玩。只有以有效名称开始且完成的游戏才会提交到排行榜。",
     "game": "游戏画面",
@@ -1444,6 +1461,8 @@
     "start": "Commencer la partie",
     "rules": "Règles du jeu",
     "shareGame": "Partager le jeu",
+    "shareX": "Partager sur X",
+    "shareManualCopy": "La fenêtre de publication ne s’est pas ouverte. Copiez ce texte.",
     "other": "Autres jeux",
     "guestNote": "Vous pouvez jouer sans nom. Seules les parties terminées et commencées avec un nom valide sont envoyées au classement.",
     "game": "Partie",
@@ -1535,6 +1554,8 @@
     "start": "Spiel starten",
     "rules": "Spielanleitung",
     "shareGame": "Spiel teilen",
+    "shareX": "Auf X teilen",
+    "shareManualCopy": "Das Beitragsfenster wurde nicht geöffnet. Kopiere diesen Text.",
     "other": "Andere Spiele",
     "guestNote": "Du kannst ohne Namen spielen. Nur abgeschlossene Runden, die mit einem gültigen Namen begonnen wurden, werden an die Rangliste gesendet.",
     "game": "Spiel",
@@ -1626,6 +1647,8 @@
     "start": "게임 시작",
     "rules": "플레이 방법",
     "shareGame": "게임 공유",
+    "shareX": "X에서 공유",
+    "shareManualCopy": "게시 창이 열리지 않았습니다. 이 문구를 복사하세요.",
     "other": "다른 게임",
     "guestNote": "이름 없이도 플레이할 수 있습니다. 유효한 이름으로 시작해 끝까지 마친 플레이만 랭킹에 전송됩니다.",
     "game": "게임",
@@ -1717,6 +1740,8 @@
     "start": "Начать игру",
     "rules": "Как играть",
     "shareGame": "Поделиться игрой",
+    "shareX": "Поделиться в X",
+    "shareManualCopy": "Окно публикации не открылось. Скопируйте этот текст.",
     "other": "Другие игры",
     "guestNote": "Можно играть без имени. В рейтинг отправляются только завершённые игры, начатые с допустимым именем.",
     "game": "Игра",
@@ -1808,6 +1833,8 @@
     "start": "Inizia la partita",
     "rules": "Come giocare",
     "shareGame": "Condividi il gioco",
+    "shareX": "Condividi su X",
+    "shareManualCopy": "La finestra di pubblicazione non si è aperta. Copia questo testo.",
     "other": "Altri giochi",
     "guestNote": "Puoi giocare senza nome. Vengono inviate alla classifica solo le partite completate e iniziate con un nome valido.",
     "game": "Partita",
@@ -1899,6 +1926,8 @@
     "start": "開始遊戲",
     "rules": "玩法說明",
     "shareGame": "分享遊戲",
+    "shareX": "在 X 上分享",
+    "shareManualCopy": "未能開啟發文視窗。請複製這段文字。",
     "other": "其他遊戲",
     "guestNote": "不輸入名稱也能玩。只有以有效名稱開始且完成的遊戲才會送出至排行榜。",
     "game": "遊戲畫面",
@@ -1990,6 +2019,8 @@
     "start": "Mulai gim",
     "rules": "Cara bermain",
     "shareGame": "Bagikan gim",
+    "shareX": "Bagikan di X",
+    "shareManualCopy": "Jendela posting tidak terbuka. Salin teks ini.",
     "other": "Gim lainnya",
     "guestNote": "Anda bisa bermain tanpa nama. Hanya permainan tuntas yang dimulai dengan nama valid yang dikirim ke papan peringkat.",
     "game": "Gim",
@@ -2081,6 +2112,8 @@
     "start": "Oyuna başla",
     "rules": "Nasıl oynanır?",
     "shareGame": "Oyunu paylaş",
+    "shareX": "X’te paylaş",
+    "shareManualCopy": "Gönderi penceresi açılmadı. Bu metni kopyalayın.",
     "other": "Diğer oyunlar",
     "guestNote": "Ad yazmadan oynayabilirsin. Yalnızca geçerli bir adla başlayıp tamamladığın oyunlar sıralamaya gönderilir.",
     "game": "Oyun",
@@ -2172,6 +2205,8 @@
     "start": "Bắt đầu chơi",
     "rules": "Cách chơi",
     "shareGame": "Chia sẻ trò chơi",
+    "shareX": "Chia sẻ trên X",
+    "shareManualCopy": "Không mở được cửa sổ đăng bài. Hãy sao chép nội dung này.",
     "other": "Trò chơi khác",
     "guestNote": "Bạn có thể chơi không cần tên. Chỉ lượt chơi hoàn thành đã bắt đầu với tên hợp lệ mới được gửi lên bảng xếp hạng.",
     "game": "Trò chơi",
@@ -2263,6 +2298,8 @@
     "start": "เริ่มเกม",
     "rules": "วิธีเล่น",
     "shareGame": "แชร์เกม",
+    "shareX": "แชร์บน X",
+    "shareManualCopy": "เปิดหน้าต่างโพสต์ไม่ได้ โปรดคัดลอกข้อความนี้",
     "other": "เกมอื่น ๆ",
     "guestNote": "เล่นโดยไม่ใส่ชื่อได้ เฉพาะรอบที่เล่นจบและเริ่มด้วยชื่อที่ใช้ได้เท่านั้นที่จะส่งเข้าตารางอันดับ",
     "game": "เกม",
@@ -3206,15 +3243,36 @@
         return ok;
       }
 
+      async function shareOnX(shareText) {
+        const text = shareText.split(GAME_URL).join('').trimEnd();
+        const intent = new URL('https://twitter.com/intent/tweet');
+        intent.searchParams.set('text', text);
+        intent.searchParams.set('url', GAME_URL);
+        let popup;
+        try {
+          popup = window.open('about:blank', '_blank');
+          if (popup && !popup.closed) {
+            popup.opener = null;
+            popup.location.replace(intent.href);
+            return;
+          }
+        } catch {
+          try { popup?.close(); } catch {}
+        }
+        const fullText = text + '\n' + GAME_URL;
+        if (await copyText(fullText)) {
+          showToast(tr('copied'));
+          return;
+        }
+        window.prompt(tr('shareManualCopy'), fullText);
+      }
+
       async function shareHome() {
-        const ok = await copyText(buildHomeShareText());
-        showToast(ok ? tr('copied') : tr('copyError'));
+        return shareOnX(buildHomeShareText());
       }
 
       async function shareResult() {
-        const text = state.lastShareText || buildResultShareText(state.lastResultMode);
-        const ok = await copyText(text);
-        showToast(ok ? tr('copied') : tr('copyError'));
+        return shareOnX(state.lastShareText || buildResultShareText(state.lastResultMode));
       }
 
       function openRules() {
