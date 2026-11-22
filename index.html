@@ -666,6 +666,13 @@
       white-space: nowrap;
     }
 
+    #rankingRetryButton {
+      margin-top: 8px;
+      min-height: 44px;
+    }
+
+    #rankingRetryButton[hidden] { display: none; }
+
     .ranking-list {
       display: grid;
       gap: 7px;
@@ -915,11 +922,12 @@
           <section class="ranking-panel" aria-label="ランキング" data-l10n-aria-label="ranking">
             <div class="ranking-head">
               <h3 data-l10n="ranking">ランキング</h3>
-              <span id="rankingStatus" class="ranking-status" data-l10n="checking">確認中</span>
+              <span id="rankingStatus" class="ranking-status" role="status" data-l10n="checking">確認中</span>
             </div>
-            <div id="rankingList" class="ranking-list" aria-live="polite">
+            <div id="rankingList" class="ranking-list" aria-live="polite" aria-busy="false">
               <div class="ranking-empty" data-l10n="loading">ランキングを読み込みます。</div>
             </div>
+            <button id="rankingRetryButton" class="btn secondary" type="button" aria-controls="rankingList" data-l10n="retryRank" hidden>ランキングを再読み込み</button>
           </section>
 
           <div class="button-grid">
@@ -973,7 +981,7 @@
       const MAX_ARRIVAL_MS = 450;
       const TARGET_HALF_GAP_PX = 12;
       const FAIL_MARGIN_PX = 24;
-      const RANKING_LIMIT = 5;
+      const RANKING_LIMIT = 30;
 
       const NAME_STORAGE_KEY = 'toreba_iinoyo_player_name_v1';
       const BEST_STORAGE_KEY = 'toreba_iinoyo_best_score_v1';
@@ -1063,6 +1071,7 @@
     "rank": "{n}位",
     "top": "上位{n}件",
     "fetchFail": "取得失敗",
+    "retryRank": "ランキングを再読み込み",
     "fetchNote": "ランキングを読み込めませんでした。プレイ結果はこの画面で確認できます。",
     "submitReject": "ランキング送信は受け付けられませんでした。名前やスコアは画面で確認できます。",
     "newBest": "自己ベスト更新。",
@@ -1156,6 +1165,7 @@
     "rank": "#{n}",
     "top": "Top {n}",
     "fetchFail": "Could not load",
+    "retryRank": "Retry leaderboard",
     "fetchNote": "The leaderboard could not be loaded. Your result is still available on this screen.",
     "submitReject": "The leaderboard did not accept your submission. You can still see your name and score here.",
     "newBest": "New personal best!",
@@ -1249,6 +1259,7 @@
     "rank": "#{n}",
     "top": "Top {n}",
     "fetchFail": "No se pudo cargar",
+    "retryRank": "Volver a cargar la clasificación",
     "fetchNote": "No se pudo cargar la clasificación. Tu resultado sigue disponible en esta pantalla.",
     "submitReject": "La clasificación rechazó el envío. Aún puedes ver tu nombre y tu puntuación aquí.",
     "newBest": "¡Nuevo récord personal!",
@@ -1342,6 +1353,7 @@
     "rank": "#{n}",
     "top": "Top {n}",
     "fetchFail": "Não foi possível carregar",
+    "retryRank": "Recarregar a classificação",
     "fetchNote": "Não foi possível carregar o ranking. Seu resultado ainda está disponível nesta tela.",
     "submitReject": "O ranking não aceitou o envio. Você ainda pode ver seu nome e sua pontuação aqui.",
     "newBest": "Novo recorde pessoal!",
@@ -1435,6 +1447,7 @@
     "rank": "第 {n} 名",
     "top": "前 {n} 名",
     "fetchFail": "加载失败",
+    "retryRank": "重试加载排行榜",
     "fetchNote": "无法加载排行榜。仍可在本页面查看游戏结果。",
     "submitReject": "排行榜未接受本次提交。仍可在本页面查看名称和分数。",
     "newBest": "刷新个人纪录！",
@@ -1528,6 +1541,7 @@
     "rank": "n° {n}",
     "top": "Top {n}",
     "fetchFail": "Échec du chargement",
+    "retryRank": "Recharger le classement",
     "fetchNote": "Impossible de charger le classement. Votre résultat est toujours disponible sur cet écran.",
     "submitReject": "Le classement a refusé le résultat. Vous pouvez toujours voir votre nom et votre score ici.",
     "newBest": "Nouveau record personnel !",
@@ -1621,6 +1635,7 @@
     "rank": "Platz {n}",
     "top": "Top {n}",
     "fetchFail": "Laden fehlgeschlagen",
+    "retryRank": "Rangliste erneut laden",
     "fetchNote": "Die Rangliste konnte nicht geladen werden. Dein Ergebnis bleibt auf diesem Bildschirm verfügbar.",
     "submitReject": "Die Rangliste hat das Ergebnis nicht angenommen. Du siehst deinen Namen und deine Punkte weiterhin hier.",
     "newBest": "Neue persönliche Bestleistung!",
@@ -1714,6 +1729,7 @@
     "rank": "{n}위",
     "top": "상위 {n}명",
     "fetchFail": "불러오지 못했습니다",
+    "retryRank": "순위표 다시 불러오기",
     "fetchNote": "랭킹을 불러오지 못했습니다. 이번 결과는 이 화면에서 계속 확인할 수 있습니다.",
     "submitReject": "랭킹에서 기록을 받아들이지 않았습니다. 이름과 점수는 여기에서 계속 확인할 수 있습니다.",
     "newBest": "개인 최고 기록 갱신!",
@@ -1807,6 +1823,7 @@
     "rank": "№ {n}",
     "top": "Топ-{n}",
     "fetchFail": "Не удалось загрузить",
+    "retryRank": "Загрузить таблицу лидеров снова",
     "fetchNote": "Не удалось загрузить рейтинг. Результат игры по-прежнему доступен на этом экране.",
     "submitReject": "Рейтинг не принял результат. Имя и счёт остаются на экране.",
     "newBest": "Новый личный рекорд!",
@@ -1900,6 +1917,7 @@
     "rank": "Pos. {n}",
     "top": "Primi {n}",
     "fetchFail": "Caricamento non riuscito",
+    "retryRank": "Ricarica la classifica",
     "fetchNote": "Impossibile caricare la classifica. Il tuo risultato è ancora disponibile in questa schermata.",
     "submitReject": "La classifica ha rifiutato il risultato. Puoi comunque vedere qui il tuo nome e il tuo punteggio.",
     "newBest": "Nuovo record personale!",
@@ -1993,6 +2011,7 @@
     "rank": "第 {n} 名",
     "top": "前 {n} 名",
     "fetchFail": "載入失敗",
+    "retryRank": "重試載入排行榜",
     "fetchNote": "無法載入排行榜。仍可在本畫面查看遊戲結果。",
     "submitReject": "排行榜未接受這次送出。仍可在本畫面查看名稱和分數。",
     "newBest": "刷新個人紀錄！",
@@ -2086,6 +2105,7 @@
     "rank": "Peringkat {n}",
     "top": "{n} teratas",
     "fetchFail": "Gagal memuat",
+    "retryRank": "Muat ulang papan peringkat",
     "fetchNote": "Papan peringkat tidak dapat dimuat. Hasil tetap dapat dilihat di layar ini.",
     "submitReject": "Papan peringkat tidak menerima kiriman. Nama dan skor tetap dapat dilihat di sini.",
     "newBest": "Rekor pribadi baru!",
@@ -2179,6 +2199,7 @@
     "rank": "{n}. sıra",
     "top": "İlk {n}",
     "fetchFail": "Yüklenemedi",
+    "retryRank": "Sıralamayı yeniden yükle",
     "fetchNote": "Sıralama yüklenemedi. Sonucun bu ekranda görülebilir.",
     "submitReject": "Sıralama gönderiyi kabul etmedi. Adını ve puanını bu ekranda görebilirsin.",
     "newBest": "Yeni kişisel rekor!",
@@ -2272,6 +2293,7 @@
     "rank": "Hạng {n}",
     "top": "Top {n}",
     "fetchFail": "Không tải được",
+    "retryRank": "Tải lại bảng xếp hạng",
     "fetchNote": "Không thể tải bảng xếp hạng. Bạn vẫn xem được kết quả trên màn hình này.",
     "submitReject": "Bảng xếp hạng không chấp nhận kết quả. Bạn vẫn có thể xem tên và điểm ở đây.",
     "newBest": "Kỷ lục cá nhân mới!",
@@ -2365,6 +2387,7 @@
     "rank": "อันดับ {n}",
     "top": "{n} อันดับแรก",
     "fetchFail": "โหลดไม่สำเร็จ",
+    "retryRank": "โหลดตารางอันดับใหม่",
     "fetchNote": "โหลดตารางอันดับไม่ได้ แต่ยังดูผลการเล่นได้จากหน้าจอนี้",
     "submitReject": "ตารางอันดับไม่รับผลที่ส่ง คุณยังดูชื่อและคะแนนได้ที่นี่",
     "newBest": "สถิติส่วนตัวใหม่!",
@@ -2468,6 +2491,7 @@
         submitStatus: document.getElementById('submitStatus'),
         rankingStatus: document.getElementById('rankingStatus'),
         rankingList: document.getElementById('rankingList'),
+        rankingRetryButton: document.getElementById('rankingRetryButton'),
         resultShareButton: document.getElementById('resultShareButton'),
         restartButton: document.getElementById('restartButton'),
         finishButton: document.getElementById('finishButton'),
@@ -3033,6 +3057,13 @@
 
       function resetRankingView() {
         state.rankingRequestId += 1;
+        els.rankingRetryButton.hidden = true;
+        showRankingLoading();
+      }
+
+      function showRankingLoading() {
+        els.rankingRetryButton.disabled = true;
+        els.rankingList.setAttribute('aria-busy', 'true');
         els.rankingStatus.textContent = tr('checking');
         els.rankingList.textContent = '';
         const empty = document.createElement('div');
@@ -3069,13 +3100,13 @@
         return NaN;
       }
 
-      function pickRankingRank(row, index) {
+      function pickRankingRank(row) {
         const candidates = [row.rank_no, row.rank, row.ranking, row.position];
         for (const candidate of candidates) {
           const value = Number(candidate);
-          if (Number.isFinite(value) && value > 0) return value;
+          if (Number.isSafeInteger(value) && value > 0 && (typeof candidate === 'string' || typeof candidate === 'number')) return value;
         }
-        return index + 1;
+        return null;
       }
 
       async function callSupabaseRpc(functionName, payload) {
@@ -3095,22 +3126,11 @@
       }
 
       async function fetchBestRanking(limit) {
-        const payloads = [
-          { p_game_slug: GAME_SLUG, p_limit: limit },
-          { p_game_slug: GAME_SLUG, limit },
-          { game_slug: GAME_SLUG, limit },
-          { p_game_slug: GAME_SLUG }
-        ];
-        let lastError = null;
-        for (const payload of payloads) {
-          try {
-            const data = await callSupabaseRpc('get_best_score_ranking', payload);
-            return Array.isArray(data) ? data.slice(0, limit) : [];
-          } catch (error) {
-            lastError = error;
-          }
+        const data = await callSupabaseRpc('get_best_score_ranking', { p_game_slug: GAME_SLUG, p_limit: limit });
+        if (!Array.isArray(data) || data.some(row => !row || typeof row !== 'object' || Array.isArray(row))) {
+          throw new Error('invalid ranking response');
         }
-        throw lastError || new Error('ranking fetch failed');
+        return data.slice(0, limit);
       }
 
       function renderRankingRows(rows) {
@@ -3123,13 +3143,14 @@
           return;
         }
 
-        rows.forEach((row, index) => {
+        rows.forEach(row => {
           const line = document.createElement('div');
           line.className = 'ranking-row';
 
           const rank = document.createElement('span');
           rank.className = 'ranking-rank';
-          rank.textContent = tr('rank', {n:pickRankingRank(row,index)});
+          const position = pickRankingRank(row);
+          rank.textContent = position === null ? '—' : tr('rank', {n:position});
 
           const name = document.createElement('span');
           name.className = 'ranking-name';
@@ -3147,20 +3168,28 @@
       }
 
       async function loadResultRanking() {
-        const requestId = state.rankingRequestId;
+        if (state.screen !== 'result') return;
+        const requestId = ++state.rankingRequestId;
+        const current = () => requestId === state.rankingRequestId && state.screen === 'result';
+        showRankingLoading();
         try {
           const rows = await fetchBestRanking(RANKING_LIMIT);
-          if (requestId !== state.rankingRequestId) return;
-          els.rankingStatus.textContent = tr('top', {n:RANKING_LIMIT});
+          if (!current()) return;
+          els.rankingStatus.textContent = rows.length ? tr('top', {n:RANKING_LIMIT}) : tr('emptyRank');
           renderRankingRows(rows);
+          els.rankingRetryButton.hidden = true;
         } catch (error) {
-          if (requestId !== state.rankingRequestId) return;
+          if (!current()) return;
           els.rankingStatus.textContent = tr('fetchFail');
           els.rankingList.textContent = '';
           const empty = document.createElement('div');
           empty.className = 'ranking-empty';
           empty.textContent = tr('fetchNote');
           els.rankingList.appendChild(empty);
+          els.rankingRetryButton.hidden = false;
+          els.rankingRetryButton.disabled = false;
+        } finally {
+          if (current()) els.rankingList.setAttribute('aria-busy', 'false');
         }
       }
 
@@ -3300,6 +3329,7 @@
         els.clearNameButton.addEventListener('click', clearSavedName);
         els.restartButton.addEventListener('click', restartGame);
         els.finishButton.addEventListener('click', returnHome);
+        els.rankingRetryButton.addEventListener('click', loadResultRanking);
         els.retireButton.addEventListener('click', retireGame);
         els.rulesButton.addEventListener('click', openRules);
         els.closeRulesButton.addEventListener('click', closeRules);
