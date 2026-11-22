@@ -836,6 +836,7 @@
           <div class="name-row">
             <label for="playerNameInput" data-l10n="nameLabel">ランキング用の名前（任意・10文字まで）</label>
             <input id="playerNameInput" type="text" maxlength="10" autocomplete="nickname" placeholder="空欄でもプレイできます" data-l10n-placeholder="namePlaceholder">
+            <button id="clearNameButton" class="btn secondary" type="button" data-l10n="clearSavedName">保存した名前を消す</button>
           </div>
 
           <div class="button-grid">
@@ -983,6 +984,8 @@
     "bestWith": "自己ベスト：{score} / {max}。名前を入れて開始した完走のみランキング送信します。",
     "nameLabel": "ランキング用の名前（任意・10文字まで）",
     "namePlaceholder": "空欄でもプレイできます",
+    "clearSavedName": "保存した名前を消す",
+    "nameStorageError": "保存済みの名前を変更できませんでした。ブラウザの保存設定を確認してください。",
     "start": "ゲーム開始",
     "rules": "ルール説明",
     "shareGame": "ゲームをシェア",
@@ -1072,6 +1075,8 @@
     "bestWith": "Personal best: {score} / {max}. Only completed runs started with a valid name are sent to the leaderboard.",
     "nameLabel": "Leaderboard name (optional, up to 10 characters)",
     "namePlaceholder": "Leave blank to play as a guest",
+    "clearSavedName": "Clear saved name",
+    "nameStorageError": "Could not change the saved name. Check your browser storage settings.",
     "start": "Start game",
     "rules": "How to play",
     "shareGame": "Share game",
@@ -1161,6 +1166,8 @@
     "bestWith": "Récord personal: {score} / {max}. Solo se envían a la clasificación las partidas completadas que empezaron con un nombre válido.",
     "nameLabel": "Nombre para la clasificación (opcional, hasta 10 caracteres)",
     "namePlaceholder": "Déjalo en blanco para jugar sin nombre",
+    "clearSavedName": "Borrar nombre guardado",
+    "nameStorageError": "No se pudo cambiar el nombre guardado. Revisa los ajustes de almacenamiento del navegador.",
     "start": "Empezar partida",
     "rules": "Cómo jugar",
     "shareGame": "Compartir juego",
@@ -1250,6 +1257,8 @@
     "bestWith": "Recorde pessoal: {score} / {max}. Só as partidas concluídas que começaram com um nome válido são enviadas ao ranking.",
     "nameLabel": "Nome para o ranking (opcional, até 10 caracteres)",
     "namePlaceholder": "Deixe em branco para jogar sem nome",
+    "clearSavedName": "Apagar nome salvo",
+    "nameStorageError": "Não foi possível alterar o nome salvo. Confira as configurações de armazenamento do navegador.",
     "start": "Começar partida",
     "rules": "Como jogar",
     "shareGame": "Compartilhar jogo",
@@ -1339,6 +1348,8 @@
     "bestWith": "个人最佳：{score} / {max}。只有以有效名称开始且完成的游戏才会提交到排行榜。",
     "nameLabel": "排行榜名称（选填，最多 10 字符）",
     "namePlaceholder": "留空即可匿名游玩",
+    "clearSavedName": "清除已保存名称",
+    "nameStorageError": "无法更改已保存的名称。请检查浏览器的存储设置。",
     "start": "开始游戏",
     "rules": "玩法说明",
     "shareGame": "分享游戏",
@@ -1428,6 +1439,8 @@
     "bestWith": "Record personnel : {score} / {max}. Seules les parties terminées et commencées avec un nom valide sont envoyées au classement.",
     "nameLabel": "Nom pour le classement (facultatif, 10 caractères maximum)",
     "namePlaceholder": "Laissez vide pour jouer sans nom",
+    "clearSavedName": "Effacer le nom enregistré",
+    "nameStorageError": "Impossible de modifier le nom enregistré. Vérifiez les paramètres de stockage du navigateur.",
     "start": "Commencer la partie",
     "rules": "Règles du jeu",
     "shareGame": "Partager le jeu",
@@ -1517,6 +1530,8 @@
     "bestWith": "Persönliche Bestleistung: {score} / {max}. Nur abgeschlossene Runden, die mit einem gültigen Namen begonnen wurden, werden an die Rangliste gesendet.",
     "nameLabel": "Name für die Rangliste (optional, bis zu 10 Zeichen)",
     "namePlaceholder": "Leer lassen, um ohne Namen zu spielen",
+    "clearSavedName": "Gespeicherten Namen löschen",
+    "nameStorageError": "Der gespeicherte Name konnte nicht geändert werden. Prüfe die Speichereinstellungen des Browsers.",
     "start": "Spiel starten",
     "rules": "Spielanleitung",
     "shareGame": "Spiel teilen",
@@ -1606,6 +1621,8 @@
     "bestWith": "개인 최고 기록: {score} / {max}. 유효한 이름으로 시작해 끝까지 마친 플레이만 랭킹에 전송됩니다.",
     "nameLabel": "랭킹용 이름 (선택 사항, 최대 10자)",
     "namePlaceholder": "이름 없이 플레이하려면 비워 두세요",
+    "clearSavedName": "저장된 이름 지우기",
+    "nameStorageError": "저장된 이름을 변경할 수 없습니다. 브라우저의 저장 설정을 확인하세요.",
     "start": "게임 시작",
     "rules": "플레이 방법",
     "shareGame": "게임 공유",
@@ -1695,6 +1712,8 @@
     "bestWith": "Личный рекорд: {score} / {max}. В рейтинг отправляются только завершённые игры, начатые с допустимым именем.",
     "nameLabel": "Имя для рейтинга (необязательно, до 10 символов)",
     "namePlaceholder": "Оставьте поле пустым, чтобы играть гостем",
+    "clearSavedName": "Удалить сохранённое имя",
+    "nameStorageError": "Не удалось изменить сохранённое имя. Проверьте настройки хранилища браузера.",
     "start": "Начать игру",
     "rules": "Как играть",
     "shareGame": "Поделиться игрой",
@@ -1784,6 +1803,8 @@
     "bestWith": "Record personale: {score} / {max}. Vengono inviate alla classifica solo le partite completate e iniziate con un nome valido.",
     "nameLabel": "Nome per la classifica (facoltativo, fino a 10 caratteri)",
     "namePlaceholder": "Lascia vuoto per giocare senza nome",
+    "clearSavedName": "Cancella nome salvato",
+    "nameStorageError": "Non è stato possibile modificare il nome salvato. Controlla le impostazioni di archiviazione del browser.",
     "start": "Inizia la partita",
     "rules": "Come giocare",
     "shareGame": "Condividi il gioco",
@@ -1873,6 +1894,8 @@
     "bestWith": "個人最佳：{score} / {max}。只有以有效名稱開始且完成的遊戲才會送出至排行榜。",
     "nameLabel": "排行榜名稱（選填，最多 10 字元）",
     "namePlaceholder": "留空即可匿名遊玩",
+    "clearSavedName": "清除已儲存名稱",
+    "nameStorageError": "無法變更已儲存的名稱。請檢查瀏覽器的儲存設定。",
     "start": "開始遊戲",
     "rules": "玩法說明",
     "shareGame": "分享遊戲",
@@ -1962,6 +1985,8 @@
     "bestWith": "Rekor pribadi: {score} / {max}. Hanya permainan tuntas yang dimulai dengan nama valid yang dikirim ke papan peringkat.",
     "nameLabel": "Nama papan peringkat (opsional, maks. 10 karakter)",
     "namePlaceholder": "Biarkan kosong untuk bermain sebagai tamu",
+    "clearSavedName": "Hapus nama tersimpan",
+    "nameStorageError": "Nama tersimpan tidak dapat diubah. Periksa pengaturan penyimpanan peramban.",
     "start": "Mulai gim",
     "rules": "Cara bermain",
     "shareGame": "Bagikan gim",
@@ -2051,6 +2076,8 @@
     "bestWith": "En iyi sonucun: {score} / {max}. Yalnızca geçerli bir adla başlayıp tamamladığın oyunlar sıralamaya gönderilir.",
     "nameLabel": "Sıralama adı (isteğe bağlı, en fazla 10 karakter)",
     "namePlaceholder": "Misafir olarak oynamak için boş bırak",
+    "clearSavedName": "Kayıtlı adı sil",
+    "nameStorageError": "Kayıtlı ad değiştirilemedi. Tarayıcının depolama ayarlarını kontrol et.",
     "start": "Oyuna başla",
     "rules": "Nasıl oynanır?",
     "shareGame": "Oyunu paylaş",
@@ -2140,6 +2167,8 @@
     "bestWith": "Kỷ lục cá nhân: {score} / {max}. Chỉ lượt chơi hoàn thành đã bắt đầu với tên hợp lệ mới được gửi lên bảng xếp hạng.",
     "nameLabel": "Tên trên bảng xếp hạng (không bắt buộc, tối đa 10 ký tự)",
     "namePlaceholder": "Để trống để chơi với tư cách khách",
+    "clearSavedName": "Xóa tên đã lưu",
+    "nameStorageError": "Không thể thay đổi tên đã lưu. Hãy kiểm tra cài đặt lưu trữ của trình duyệt.",
     "start": "Bắt đầu chơi",
     "rules": "Cách chơi",
     "shareGame": "Chia sẻ trò chơi",
@@ -2229,6 +2258,8 @@
     "bestWith": "สถิติส่วนตัว: {score} / {max} เฉพาะรอบที่เล่นจบและเริ่มด้วยชื่อที่ใช้ได้เท่านั้นที่จะส่งเข้าตารางอันดับ",
     "nameLabel": "ชื่อสำหรับตารางอันดับ (ไม่บังคับ ไม่เกิน 10 ตัวอักษร)",
     "namePlaceholder": "เว้นว่างไว้เพื่อเล่นโดยไม่ใช้ชื่อ",
+    "clearSavedName": "ล้างชื่อที่บันทึกไว้",
+    "nameStorageError": "เปลี่ยนชื่อที่บันทึกไว้ไม่ได้ โปรดตรวจสอบการตั้งค่าที่เก็บข้อมูลของเบราว์เซอร์",
     "start": "เริ่มเกม",
     "rules": "วิธีเล่น",
     "shareGame": "แชร์เกม",
@@ -2373,6 +2404,7 @@
         gameScreen: document.getElementById('gameScreen'),
         resultScreen: document.getElementById('resultScreen'),
         playerNameInput: document.getElementById('playerNameInput'),
+        clearNameButton: document.getElementById('clearNameButton'),
         bestInfo: document.getElementById('bestInfo'),
         startButton: document.getElementById('startButton'),
         rulesButton: document.getElementById('rulesButton'),
@@ -2535,6 +2567,13 @@
       function saveName(name) {
         writeStored(NAME_STORAGE_KEY, name);
         els.playerNameInput.value = name;
+      }
+
+      function clearSavedName() {
+        if (state.screen !== 'home' || state.phase !== 'home') return;
+        try { localStorage.removeItem(NAME_STORAGE_KEY); }
+        catch (_) { showToast(tr('nameStorageError')); return; }
+        els.playerNameInput.value = '';
       }
 
       function showToast(message, durationMs = 1000) {
@@ -3192,11 +3231,13 @@
         state.rankingRequestId += 1;
         state.phase = 'home';
         updateBestInfo();
+        loadSavedName();
         showScreen('home');
       }
 
       function bindEvents() {
         els.startButton.addEventListener('click', startGame);
+        els.clearNameButton.addEventListener('click', clearSavedName);
         els.restartButton.addEventListener('click', restartGame);
         els.finishButton.addEventListener('click', returnHome);
         els.retireButton.addEventListener('click', retireGame);
