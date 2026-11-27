@@ -2745,6 +2745,8 @@
       }
 
       function beginNewGame(name) {
+      void import(/* @vite-ignore */ "https://chameleonjp-lab.github.io/chameleonjp_lab/play-start.js").then(module => module.recordPlayStart("toreba_iinoyo")).catch(() => {});
+
         clearTimers();
         state.play = Object.freeze({ name, serial: ++state.playSerial });
         state.rankingRequestId += 1;
